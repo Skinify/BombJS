@@ -3,20 +3,20 @@ import AssetLoadEventEnum from "../../enuns/gameEnuns/AssetLoadEventEnum";
 import IScene from "../interface/IScene";
 
 abstract class BaseScene extends Container implements IScene {
-  private _loadingResources: any;
-  private _loadedResources: any;
+  private _loadingResources: number;
+  private _loadedResources: number;
   private _loaded: boolean;
   protected constructor() {
     super();
     this._loaded = false;
+    this._loadedResources = 0;
+    this._loadingResources = 0;
     self.addEventListener(AssetLoadEventEnum.START_LOADING, () => {
       this._loadingResources++;
     });
     self.addEventListener(AssetLoadEventEnum.FINISHED_LOADING, () => {
       this._loadedResources++;
-      console.log(this._loadedResources);
-      console.log(this._loadingResources);
-      this._loaded = true;
+      if (this._loadedResources == this._loadingResources) this._loaded = true;
     });
   }
 

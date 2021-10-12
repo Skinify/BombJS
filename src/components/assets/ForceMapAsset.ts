@@ -1,10 +1,10 @@
 import { Rectangle, Sprite } from "pixi.js";
 import { BaseTexture, ImageSource, Texture } from "@pixi/core";
-import ForceMapAssetImage from "../../images/map/ForceMapAssetImage.png";
 import MapEnum from "../enuns/resourcesEnuns/MapEnum";
 import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
 import Ground from "../map/Ground";
+import paths from "../../config/paths.json";
 
 class ForceMapAsset extends Ground implements IAsset {
   private _backgroundSprite: Sprite;
@@ -19,7 +19,7 @@ class ForceMapAsset extends Ground implements IAsset {
     this.addChild(this._backgroundSprite);
     AssetsManager.Instance.LoadAsset(
       MapEnum.MAP_01_FORCEMAP,
-      ForceMapAssetImage
+      `${paths.IMAGE_PATH}/map/${MapEnum.MAP_01_FORCEMAP}.png`
     )
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));

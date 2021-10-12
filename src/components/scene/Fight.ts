@@ -1,43 +1,22 @@
 import { Container } from "@pixi/display";
 import TrainerMap from "../map/TrainerMap";
 import Player from "../physics/Player";
-import IScene from "./interface/IScene";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
-import AssetLoadEventEnum from "../enuns/gameEnuns/AssetLoadEventEnum";
 
-class Fight extends Container implements IScene {
+import BaseScene from "./base/BaseScene";
+
+class Fight extends BaseScene {
   private _map: TrainerMap;
   private _player: Player;
-  private _loaded: boolean;
-  private _loadingResources: number;
-  private _loadedResources: number;
 
   constructor() {
     super();
-    this._loadingResources = 0;
-    this._loadedResources = 0;
-    self.addEventListener(AssetLoadEventEnum.START_LOADING, () => {
-      this._loadingResources++;
-    });
-    self.addEventListener(AssetLoadEventEnum.FINISHED_LOADING, () => {
-      this._loadedResources++;
-      console.log(this._loadedResources);
-      console.log(this._loadingResources);
-      this._loaded = true;
-    });
     this._map = new TrainerMap();
     this._player = new Player();
-    this._loaded = false;
   }
 
   Load(): Promise<void> {
-    return new Promise((resolve, rej) => {
-      setInterval(() => {
-        if (this._loaded) {
-          resolve();
-        }
-      }, 10);
-    });
+    return super.Load();
   }
 
   Enter(): Container {

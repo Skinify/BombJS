@@ -1,19 +1,25 @@
-import { Resource, Texture } from "@pixi/core";
-import { AnimatedSprite } from "@pixi/sprite-animated";
-import BloodAssetImage from "../../images/blood/1.png";
+import { Sprite } from "pixi.js";
+import { BaseTexture, Texture } from "@pixi/core";
+import paths from "../../config/paths.json";
+import IAsset from "./interface/IAsset";
+import AssetsManager from "../managers/AssetsManager";
+import GeneralEnum from "../enuns/resourcesEnuns/GeneralEnum";
 
-class BloodAsset extends AnimatedSprite {
+class BloodAsset extends Sprite implements IAsset {
   constructor() {
-    let t: Texture<Resource>[] = [];
-
-    /*
-    for (let i = 0; i < textures.length; i++) {
-      t.push(Texture.from(textures[i]));
-    }*/
-
-    t.push(Texture.from(BloodAssetImage));
-
-    super(t);
+    super(Texture.EMPTY);
+    AssetsManager.Instance.LoadAsset(
+      GeneralEnum.BLOOD_BAR,
+      `${paths.IMAGE_PATH}/general/${GeneralEnum.BLOOD_BAR}.png`
+    )
+      .then((x) => this.OnLoad(x))
+      .catch((x) => this.OnLoadError(x));
+  }
+  OnLoad(args: any): void {
+    this.texture = new Texture(BaseTexture.from(args.data));
+  }
+  OnLoadError(args: any): void {
+    throw new Error("Method not implemented.");
   }
 }
 

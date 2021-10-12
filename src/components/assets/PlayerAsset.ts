@@ -5,16 +5,20 @@ import {
   AnimatedSprite,
   ImageSource,
 } from "pixi.js";
-import playerSheetImage from "../../images/player/340.png";
 import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
+import paths from "../../config/paths.json";
+import GeneralEnum from "../enuns/resourcesEnuns/GeneralEnum";
 
 class PlayerAsset extends AnimatedSprite implements IAsset {
   private _playerSheet: {};
   constructor() {
     super([Texture.EMPTY]);
     this._playerSheet = {};
-    AssetsManager.Instance.LoadAsset("002", playerSheetImage)
+    AssetsManager.Instance.LoadAsset(
+      GeneralEnum.PLAYER_SPRITE_SHEET,
+      `${paths.IMAGE_PATH}/general/${GeneralEnum.PLAYER_SPRITE_SHEET}.png`
+    )
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));
   }

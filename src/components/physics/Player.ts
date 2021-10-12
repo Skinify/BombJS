@@ -11,6 +11,7 @@ import KeyboardEvent from "../events/KeyboardEvent";
 import ActionManager from "../managers/ActionManager";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import AssetLoadEventEnum from "../enuns/gameEnuns/AssetLoadEventEnum";
+import HudAsset from "../assets/HudAsset";
 
 class Player extends PhysicalObj {
   protected _player: Sprite;
@@ -40,6 +41,8 @@ class Player extends PhysicalObj {
     this._testRect = new Rectangle(-5, -10, 20, 20);
     this._body = new PlayerAsset();
     let tst = new Sprite(Texture.WHITE);
+    let hud = new HudAsset();
+    this.addChild(hud);
     tst.x = 0;
     tst.y = 0;
     tst.height = 1;

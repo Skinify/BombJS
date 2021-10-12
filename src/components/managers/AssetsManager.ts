@@ -27,7 +27,6 @@ class AssetsManager extends BaseManager {
       dispatchEvent(new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING));
       return new Promise((resolve) => resolve(this._loadedAssets[key]));
     } else {
-      dispatchEvent(new AssetLoadEvent(AssetLoadEventEnum.START_LOADING));
       return new Promise((resolve, reject) => {
         loader.add(key, path);
         loader.onError.add(reject);

@@ -1,19 +1,25 @@
-import { Resource, Texture } from "@pixi/core";
-import { AnimatedSprite } from "@pixi/sprite-animated";
-import MoveStripAssetImage from "../../images/moveStrip/1.png";
+import { Sprite } from "pixi.js";
+import { BaseTexture, Texture } from "@pixi/core";
+import IAsset from "./interface/IAsset";
+import AssetsManager from "../managers/AssetsManager";
+import GeneralEnum from "../enuns/resourcesEnuns/GeneralEnum";
+import paths from "../../config/paths.json";
 
-class MoveStripAsset extends AnimatedSprite {
+class MoveStripAsset extends Sprite implements IAsset {
   constructor() {
-    let t: Texture<Resource>[] = [];
-
-    /*
-    for (let i = 0; i < textures.length; i++) {
-      t.push(Texture.from(textures[i]));
-    }*/
-
-    t.push(Texture.from(MoveStripAssetImage));
-
-    super(t);
+    super(Texture.EMPTY);
+    AssetsManager.Instance.LoadAsset(
+      GeneralEnum.STAMINA_BAR,
+      `${paths.IMAGE_PATH}/general/${GeneralEnum.STAMINA_BAR}.png`
+    )
+      .then((x) => this.OnLoad(x))
+      .catch((x) => this.OnLoadError(x));
+  }
+  OnLoad(args: any): void {
+    this.texture = new Texture(BaseTexture.from(args.data));
+  }
+  OnLoadError(args: any): void {
+    throw new Error("Method not implemented.");
   }
 }
 
