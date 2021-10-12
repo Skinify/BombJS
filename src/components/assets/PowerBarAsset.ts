@@ -15,7 +15,7 @@ class PowerBarAsset extends Sprite implements IAsset {
       .catch((x) => this.OnLoadError(x));
   }
 
-  OnLoad(args: any): void {
+  OnLoad(args): void {
     this.texture = new Texture(BaseTexture.from(args.data));
   }
   OnLoadError(args: any): void {

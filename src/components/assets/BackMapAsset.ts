@@ -17,7 +17,7 @@ class BackMapAsset extends Sprite implements IAsset {
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));
   }
-  OnLoad(args: { data: string | ImageSource }): void {
+  OnLoad(args): void {
     this.texture = new Texture(BaseTexture.from(args.data));
   }
   OnLoadError(args: any): void {

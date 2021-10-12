@@ -1,4 +1,4 @@
-import { Rectangle, Sprite } from "pixi.js";
+import { LoaderResource, Rectangle, Sprite } from "pixi.js";
 import { BaseTexture, ImageSource, Texture } from "@pixi/core";
 import MapEnum from "../enuns/resourcesEnuns/MapEnum";
 import AssetsManager from "../managers/AssetsManager";
@@ -33,7 +33,7 @@ class ForceMapAsset extends Ground implements IAsset {
     return this._height;
   }
 
-  OnLoad(args: { data: string | ImageSource }): void {
+  OnLoad(args: LoaderResource): void {
     this._backgroundSprite.texture = new Texture(BaseTexture.from(args.data));
     this.SetGroundTiles(
       this._backgroundSprite.texture.baseTexture.resource.source

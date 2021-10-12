@@ -24,7 +24,7 @@ class FlagAsset extends AnimatedSprite implements IAsset {
       .catch((x) => this.OnLoadError(x));
   }
 
-  OnLoad(args: any): void {
+  OnLoad(args): void {
     let w = 73;
     let h = 101;
     this.scale.set(0.9, 0.9);

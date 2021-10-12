@@ -23,7 +23,7 @@ class PlayerAsset extends AnimatedSprite implements IAsset {
       .catch((x) => this.OnLoadError(x));
   }
 
-  OnLoad(args: { data: string | ImageSource }): void {
+  OnLoad(args): void {
     let w = 114;
     let h = 95;
     let ssheet = BaseTexture.from(args.data);

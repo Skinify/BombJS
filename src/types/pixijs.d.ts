@@ -10,3 +10,11 @@ declare module "pixi.js" {
     source: any;
   }
 }
+
+declare global {
+  interface Window {
+    Temp: any;
+  }
+}
+
+window.Temp = window.Temp || {};
