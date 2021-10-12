@@ -29,7 +29,7 @@ class AssetsManager extends BaseManager {
     } else {
       return new Promise((resolve, reject) => {
         loader.add(key, path);
-        loader.onError.add(reject);
+        loader.onError.add((x) => reject(x));
         loader.onComplete.add((loader, resources) => {
           dispatchEvent(
             new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING)
@@ -63,7 +63,7 @@ class AssetsManager extends BaseManager {
         for (let i = 0; i < toLoad.length; i++) {
           loader.add(toLoad[i].key, toLoad[i].path);
         }
-        loader.onError.add(reject);
+        loader.onError.add((x) => reject(x));
         loader.onComplete.add((loader, resources) => {
           dispatchEvent(
             new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING)

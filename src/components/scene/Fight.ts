@@ -2,17 +2,23 @@ import { Container } from "@pixi/display";
 import TrainerMap from "../map/TrainerMap";
 import Player from "../physics/Player";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
+import HudView from "../view/HudView";
 
 import BaseScene from "./base/BaseScene";
+import FlagAsset from "../assets/FlagAsset";
 
 class Fight extends BaseScene {
   private _map: TrainerMap;
   private _player: Player;
+  private _hud: HudView;
+  private _flag: FlagAsset;
 
   constructor() {
     super();
     this._map = new TrainerMap();
     this._player = new Player();
+    this._hud = new HudView();
+    this._flag = new FlagAsset();
   }
 
   Load(): Promise<void> {
@@ -32,8 +38,15 @@ class Fight extends BaseScene {
     this._player.StartMoving();
     this._player.BeginNewGame();
     this._player.BeginNewTurn();
+    this._hud.x = 0;
+    this._hud.y = 0;
     this._player.interactive = true;
     this._player.IsAttacking = true;
+    this.addChild(this._hud);
+    this.addChild(this._flag);
+    this._flag.x = 400;
+    this._flag.y = 350;
+
     return this;
   }
 
