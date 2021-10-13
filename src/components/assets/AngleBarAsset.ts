@@ -46,6 +46,7 @@ class AngleBarAsset extends Sprite implements IAsset {
     let angle = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.ANGLE].data))
     );
+
     let angleHolder = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.ANGLE_HOLDER].data))
     );

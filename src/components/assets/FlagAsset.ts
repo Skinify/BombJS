@@ -18,7 +18,7 @@ class FlagAsset extends AnimatedSprite implements IAsset {
     this._flagSheet = {};
     AssetsManager.Instance.LoadAsset(
       GeneralEnum.FLAG_SPRITE_SHEET,
-      `${paths.IMAGE_PATH}/general/${HudEnums.FLAG_SPRITE_SHEET}.png`
+      `${paths.IMAGE_PATH}/general/${GeneralEnum.FLAG_SPRITE_SHEET}.png`
     )
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));

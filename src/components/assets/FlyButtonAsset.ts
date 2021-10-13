@@ -1,4 +1,4 @@
-import { AnimatedSprite, LoaderResource, Rectangle } from "pixi.js";
+import { AnimatedSprite, Rectangle } from "pixi.js";
 import { Texture } from "@pixi/core";
 import HitAreaShapes from "hitarea-shapes";
 import AssetsManager from "../managers/AssetsManager";
