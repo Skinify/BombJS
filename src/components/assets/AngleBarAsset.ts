@@ -32,6 +32,10 @@ class AngleBarAsset extends Sprite implements IAsset {
         key: HudEnums.ANGLE_POINTER_TRACE,
         path: `${paths.IMAGE_PATH}/hud/${HudEnums.ANGLE_POINTER_TRACE}.png`,
       },
+      {
+        key: HudEnums.AUX_ATTACK_BUTTON,
+        path: `${paths.IMAGE_PATH}/hud/${HudEnums.AUX_ATTACK_BUTTON}.png`,
+      },
     ])
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));
@@ -58,6 +62,10 @@ class AngleBarAsset extends Sprite implements IAsset {
       new Texture(BaseTexture.from(args[HudEnums.ANGLE_POINTER_HOLDER].data))
     );
 
+    let auxAttackButton = new Sprite(
+      new Texture(BaseTexture.from(args[HudEnums.AUX_ATTACK_BUTTON].data))
+    );
+
     angle.scale.set(1.05, 1.05);
     angle.y = 12;
     angle.x = 12;
@@ -69,17 +77,23 @@ class AngleBarAsset extends Sprite implements IAsset {
     anglePointerHolder.x = 52;
     anglePointerHolder.y = 52;
 
-    anglePointer.x = 56;
-    anglePointer.y = 56;
+    anglePointerTrace.x = 58;
+    anglePointerTrace.y = 58;
+    anglePointerTrace.anchor.set(0, 0.5);
 
-    window.Temp = anglePointer;
+    anglePointer.anchor.set(0, 0.5);
+    anglePointer.x = 58;
+    anglePointer.y = 58;
+
+    auxAttackButton.x = 130;
+    auxAttackButton.y = 40;
 
     this.addChild(angleHolder);
-    this.addChild(anglePointer);
-    this.addChild(angle);
-
     this.addChild(anglePointerTrace);
+    this.addChild(anglePointer);
     this.addChild(anglePointerHolder);
+    this.addChild(angle);
+    this.addChild(auxAttackButton);
   }
   OnLoadError(args: any): void {
     console.log(args);
