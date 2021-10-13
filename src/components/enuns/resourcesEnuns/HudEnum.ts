@@ -19,6 +19,7 @@ enum HudEnums {
   FORCE = "FORCE",
   FORCE_TRACE = "FORCE_TRACE",
   FORCE_MARKER = "FORCE_MARKER",
+  PROP_BAR = "PROP_BAR",
 }
 
 export default HudEnums;

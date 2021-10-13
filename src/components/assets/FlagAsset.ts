@@ -30,6 +30,7 @@ class FlagAsset extends AnimatedSprite implements IAsset {
     this.scale.set(0.9, 0.9);
     let ssheet = BaseTexture.from(args.data);
     this._flagSheet["STAND"] = [
+      new Texture(ssheet, new Rectangle(0, 0, w, h)),
       new Texture(ssheet, new Rectangle(1 * w, 0, w, h)),
       new Texture(ssheet, new Rectangle(2 * w, 0, w, h)),
       new Texture(ssheet, new Rectangle(3 * w, 0, w, h)),
