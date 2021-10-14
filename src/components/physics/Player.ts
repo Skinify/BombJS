@@ -111,6 +111,7 @@ class Player extends PhysicalObj {
     let upArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_UP);
     upArrowEvent.press = () => {
       this._gunAngle++;
+      console.log(this._gunAngle);
     };
     upArrowEvent.hold = () => {
       this._gunAngle++;
@@ -120,6 +121,7 @@ class Player extends PhysicalObj {
     let downArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_DOWN);
     downArrowEvent.press = () => {
       this._gunAngle--;
+      console.log(this._gunAngle);
     };
     downArrowEvent.hold = () => {
       this._gunAngle--;

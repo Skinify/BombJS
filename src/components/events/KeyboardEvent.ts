@@ -7,13 +7,27 @@ export default (value) => {
   key.release = undefined;
   key.hold = undefined;
   key.holdTimeout = 0;
+  key.holdInterval = 0;
+  key.holdFrequency = 100;
   //The `downHandler`
   key.downHandler = (event) => {
     if (event.key === key.value) {
       if (key.isUp && key.press) {
         key.press();
-        clearInterval(key.timeout);
-        if (key.hold) key.timeout = setInterval(() => key.hold(), 100);
+        key.resetHold();
+        if (key.hold) {
+          key.holdTimeout = setTimeout(() => {
+            key.holdInterval = setInterval(() => {
+              key.hold();
+            }, key.holdFrequency);
+          }, 100);
+
+          /*
+          key.holdInterval = setInterval(() => {
+            key.hold();
+            key.holdFrequency--;
+          }, key.holdFrequency);*/
+        }
       }
       key.isDown = true;
       key.isUp = false;
@@ -24,7 +38,7 @@ export default (value) => {
   //The `upHandler`
   key.upHandler = (event) => {
     if (event.key === key.value) {
-      clearInterval(key.timeout);
+      key.resetHold();
       if (key.isDown && key.release) {
         key.release();
       }
@@ -32,6 +46,12 @@ export default (value) => {
       key.isUp = true;
       event.preventDefault();
     }
+  };
+
+  key.resetHold = () => {
+    clearInterval(key.holdInterval);
+    clearTimeout(key.holdTimeout);
+    key.holdFrequency = 100;
   };
 
   //Attach event listeners
