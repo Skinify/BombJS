@@ -1,5 +1,10 @@
-import { Resource } from "@pixi/core";
-import { AbstractRenderer, BaseTexture } from "pixi.js";
+import {
+  AbstractRenderer,
+  BaseTexture,
+  Sprite,
+  Resource,
+  Container,
+} from "pixi.js";
 
 declare module "pixi.js" {
   interface AbstractRenderer {

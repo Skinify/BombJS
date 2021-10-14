@@ -10,6 +10,7 @@ import PhysicalObj from "./PhysicalObj";
 import KeyboardEvent from "../events/KeyboardEvent";
 import ActionManager from "../managers/ActionManager";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
+import KeyboardKeysEnum from "../enuns/gameEnuns/KeyboardKeysEnum";
 
 class Player extends PhysicalObj {
   protected _player: Sprite;
@@ -31,6 +32,7 @@ class Player extends PhysicalObj {
   private _action: PlayerWalkAction | null;
   private _gunAngle: number;
   private _force: number;
+  private _forceDir: number;
   private _isFly: boolean;
   private _blood: number;
 
@@ -80,6 +82,7 @@ class Player extends PhysicalObj {
     this._isAttacking = false;
     this._action = null;
     this._force = 0;
+    this._forceDir = 1;
     this._isFly = false;
     this._blood = 100;
     this._isLiving = true;
@@ -87,7 +90,7 @@ class Player extends PhysicalObj {
   }
 
   SetupMov() {
-    let leftEvent = KeyboardEvent("ArrowLeft");
+    let leftEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_LEFT);
     leftEvent.press = () => {
       this.Direction = -1;
       this.Walk();
@@ -96,13 +99,42 @@ class Player extends PhysicalObj {
       this.StopWalk();
     };
 
-    let rightEvent = KeyboardEvent("ArrowRight");
+    let rightEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_RIGHT);
     rightEvent.press = () => {
       this.Direction = 1;
       this.Walk();
     };
     rightEvent.release = () => {
       this.StopWalk();
+    };
+
+    let upArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_UP);
+    upArrowEvent.press = () => {
+      this._gunAngle++;
+    };
+    upArrowEvent.hold = () => {
+      this._gunAngle++;
+      console.log(this._gunAngle);
+    };
+
+    let downArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_DOWN);
+    downArrowEvent.press = () => {
+      this._gunAngle--;
+    };
+    downArrowEvent.hold = () => {
+      this._gunAngle--;
+      console.log(this._gunAngle);
+    };
+
+    let spaceEvent = KeyboardEvent(KeyboardKeysEnum.SPACE);
+    spaceEvent.press = () => {
+      console.log("clicou");
+    };
+    spaceEvent.release = () => {
+      console.log("soltou");
+    };
+    spaceEvent.hold = () => {
+      console.log("teste");
     };
   }
 

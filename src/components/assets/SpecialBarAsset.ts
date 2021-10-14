@@ -10,8 +10,12 @@ import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
 import HitAreaShapes from "hitarea-shapes";
+import * as PIXI from "pixi.js";
 
 class SpecialBarAsset extends Sprite implements IAsset {
+  private _lightFilter;
+  private _darkFilter;
+
   constructor() {
     super(Texture.EMPTY);
     AssetsManager.Instance.LoadAssets([
@@ -63,9 +67,19 @@ class SpecialBarAsset extends Sprite implements IAsset {
         key: HudEnums.SPECIAL_HITAREA,
         path: `${paths.IMAGE_PATH}/hud/${HudEnums.SPECIAL_HITAREA}.json`,
       },
+      {
+        key: HudEnums.BUTTONS_HITAREA,
+        path: `${paths.IMAGE_PATH}/hud/${HudEnums.BUTTONS_HITAREA}.json`,
+      },
     ])
       .then((x) => this.OnLoad(x))
       .catch((x) => this.OnLoadError(x));
+
+    this._lightFilter = new PIXI.filters.ColorMatrixFilter();
+    this._lightFilter.brightness(1.2, false);
+
+    this._darkFilter = new PIXI.filters.ColorMatrixFilter();
+    this._darkFilter.brightness(0.8, false);
   }
 
   OnLoad(args): void {
@@ -79,7 +93,6 @@ class SpecialBarAsset extends Sprite implements IAsset {
     let lifeBar = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.LIFE_BAR].data))
     );
-    lifeBar.position.set(129, 15);
     lifeBar.position.set(127, 12);
     lifeBar.scale.set(1.08, 1.08);
 
@@ -118,6 +131,16 @@ class SpecialBarAsset extends Sprite implements IAsset {
     );
     suicideButton.scale.set(0.9, 0.9);
     suicideButton.position.set(97, 48);
+
+    let hitAreaButton = new HitAreaShapes(args[HudEnums.BUTTONS_HITAREA].data);
+    this.ConfigurateButtons(hitAreaButton, [
+      chatButton,
+      emoticonButton,
+      friendsButton,
+      configButton,
+      quitButton,
+      suicideButton,
+    ]);
 
     let w = 94;
     let h = 165;
@@ -159,10 +182,23 @@ class SpecialBarAsset extends Sprite implements IAsset {
     this.addChild(configButton);
     this.addChild(quitButton);
     this.addChild(suicideButton);
-    window.Temp = suicideButton;
   }
+
   OnLoadError(args: any): void {
     console.log(args);
+  }
+
+  ConfigurateButtons(hitArea: any, btns: Array<Sprite>): void {
+    for (let i = 0; i < btns.length; i++) {
+      let button = btns[i];
+      button.on("pointerover", () => (button.filters = [this._lightFilter]));
+      button.on("pointerout", () => (button.filters = []));
+      button.on("pointerdown", () => (button.filters = [this._darkFilter]));
+      button.on("pointerup", () => (button.filters = []));
+      button.interactive = true;
+      button.buttonMode = true;
+      button.hitArea = hitArea;
+    }
   }
 }
 

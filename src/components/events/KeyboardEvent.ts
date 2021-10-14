@@ -5,10 +5,16 @@ export default (value) => {
   key.isUp = true;
   key.press = undefined;
   key.release = undefined;
+  key.hold = undefined;
+  key.holdTimeout = 0;
   //The `downHandler`
   key.downHandler = (event) => {
     if (event.key === key.value) {
-      if (key.isUp && key.press) key.press();
+      if (key.isUp && key.press) {
+        key.press();
+        clearInterval(key.timeout);
+        if (key.hold) key.timeout = setInterval(() => key.hold(), 100);
+      }
       key.isDown = true;
       key.isUp = false;
       event.preventDefault();
@@ -18,7 +24,10 @@ export default (value) => {
   //The `upHandler`
   key.upHandler = (event) => {
     if (event.key === key.value) {
-      if (key.isDown && key.release) key.release();
+      clearInterval(key.timeout);
+      if (key.isDown && key.release) {
+        key.release();
+      }
       key.isDown = false;
       key.isUp = true;
       event.preventDefault();

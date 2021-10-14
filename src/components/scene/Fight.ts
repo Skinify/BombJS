@@ -3,6 +3,7 @@ import TrainerMap from "../map/TrainerMap";
 import Player from "../physics/Player";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import HudView from "../view/HudView";
+import KeyBoardEvent from "../events/KeyboardEvent";
 
 import BaseScene from "./base/BaseScene";
 import FlagAsset from "../assets/FlagAsset";
@@ -46,7 +47,6 @@ class Fight extends BaseScene {
     this.addChild(this._flag);
     this._flag.x = 400;
     this._flag.y = 350;
-
     return this;
   }
 
