@@ -4,6 +4,7 @@ import {
   Sprite,
   Resource,
   Container,
+  Rectangle,
 } from "pixi.js";
 
 declare module "pixi.js" {

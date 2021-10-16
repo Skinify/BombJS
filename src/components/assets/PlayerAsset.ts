@@ -55,7 +55,16 @@ class PlayerAsset extends AnimatedSprite implements IAsset {
     this._playerSheet["STOP"] = [
       new Texture(ssheet, new Rectangle(1 * w, 0, w, h)),
     ];
-    this._playerSheet["SHOOT"] = [];
+    this._playerSheet["SHOOT"] = [
+      new Texture(ssheet, new Rectangle(5 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(6 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(7 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(8 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(9 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(10 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(4 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(3 * w, 2, w, h)),
+    ];
 
     super.textures = this._playerSheet["STAND"];
     this.animationSpeed = 0.3;

@@ -11,6 +11,7 @@ import KeyboardEvent from "../events/KeyboardEvent";
 import ActionManager from "../managers/ActionManager";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import KeyboardKeysEnum from "../enuns/gameEnuns/KeyboardKeysEnum";
+import ShootAction from "../actions/ShootAction";
 
 class Player extends PhysicalObj {
   protected _player: Sprite;
@@ -38,16 +39,11 @@ class Player extends PhysicalObj {
 
   constructor() {
     super(10, 100);
-    this._testRect = new Rectangle(-5, -10, 20, 20);
+    this._testRect = new Rectangle(-5, -10, 10, 10);
     this._body = new PlayerAsset();
-    let tst = new Sprite(Texture.WHITE);
-    tst.x = 0;
-    tst.y = 0;
-    tst.height = 1;
-    tst.width = 100;
-    this.addChild(tst);
-    this._body.y = -80;
-    this._body.x = -60;
+    this._body.y = -90;
+    this._body.x = -57;
+    window.Temp = this._body;
     this._player = new Sprite();
     this._player.addChild(this._body);
     this.addChild(this._player);
@@ -57,16 +53,15 @@ class Player extends PhysicalObj {
     this._bloodBarWidth = 100; ///REFATORAR
     this.addChild(this._smallBlood);
     this._takeAim = new TakeAimAsset();
-    this._takeAim.x = Player.BALL_POS.x;
-    this._takeAim.y = Player.BALL_POS.y;
+    this._takeAim.position.set(Player.BALL_POS.x, Player.BALL_POS.y);
     ///_takeAim.hand.rotation = MIN_ANGLE; ///REFATORAR
-    this._takeAim.scale.set(-1, 1);
     this._player.addChild(this._takeAim);
     this._moveStrip = new MoveStripAsset();
     this._moveStrip.x = -20;
     this._moveStrip.y = 26;
     this.addChild(this._moveStrip);
     this._gunAngle = 55;
+    this._takeAim.RotateAim(55);
     this._moveStrip.visible = this.visible;
     this._smallBlood.visible = this.visible;
     this._takeAim.visible = this.visible;
@@ -110,22 +105,18 @@ class Player extends PhysicalObj {
 
     let upArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_UP);
     upArrowEvent.press = () => {
-      this._gunAngle++;
-      console.log(this._gunAngle);
+      this.GunAngle = this._gunAngle + 1;
     };
     upArrowEvent.hold = () => {
-      this._gunAngle++;
-      console.log(this._gunAngle);
+      this.GunAngle = this._gunAngle + 1;
     };
 
     let downArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_DOWN);
     downArrowEvent.press = () => {
-      this._gunAngle--;
-      console.log(this._gunAngle);
+      this.GunAngle = this._gunAngle - 1;
     };
     downArrowEvent.hold = () => {
-      this._gunAngle--;
-      console.log(this._gunAngle);
+      this.GunAngle = this._gunAngle - 1;
     };
 
     let spaceEvent = KeyboardEvent(KeyboardKeysEnum.SPACE);
@@ -133,7 +124,9 @@ class Player extends PhysicalObj {
       console.log("clicou");
     };
     spaceEvent.release = () => {
+      this.StopWalk();
       console.log("soltou");
+      this.Shoot();
     };
     spaceEvent.hold = () => {
       console.log("teste");
@@ -157,7 +150,7 @@ class Player extends PhysicalObj {
   BeginNewGame(): void {
     this._totalBlood = 1000;
     this._blood = 1000;
-    this._direction = 1;
+    this.Direction = 1;
   }
 
   BeginNewTurn(): void {
@@ -193,6 +186,25 @@ class Player extends PhysicalObj {
       return this._playerAngle - this._gunAngle;
     }
     return this._playerAngle + this._gunAngle - 180;
+  }
+
+  Shoot(): void {
+    this.Act(
+      new ShootAction(
+        this,
+        this.ShootPos,
+        this._force,
+        this.ShootAngle,
+        this._isSpecial,
+        this._isFly
+      )
+    );
+    this.IsAttacking = false;
+  }
+
+  get ShootPos(): Point {
+    var p: Point = this._player.getGlobalPosition(Player.BALL_POS);
+    return this.toLocal(p);
   }
 
   UseProp(): void {
@@ -234,6 +246,18 @@ class Player extends PhysicalObj {
     if (this._direction == value) return;
     this._direction = value;
     this.scale.x = value;
+  }
+
+  set GunAngle(value: number) {
+    if (this._gunAngle == value) {
+      return;
+    }
+    if (value < Player.MIN_ANGLE || value > Player.MAX_ANGLE) {
+      return;
+    }
+    this._gunAngle = value;
+    this._takeAim.RotateAim(value);
+    dispatchEvent(new PlayerEvent(PlayerEventsEnum.GUN_ANGEL_CHANGED));
   }
 
   CanMoveDirection(dir: number): boolean {
@@ -288,9 +312,17 @@ class Player extends PhysicalObj {
     if (this._playerAngle == value) {
       return;
     }
-    this._playerAngle = value;
-    //this._player.rotation = value * 10;
-    this._player.angle = value;
+
+    console.log(this.Direction);
+
+    if (this.Direction > 1) {
+      this._playerAngle = -Math.abs(value);
+      this._player.angle = -Math.abs(value);
+    } else {
+      this._playerAngle = Math.abs(value);
+      this._player.angle = Math.abs(value);
+    }
+
     dispatchEvent(new PlayerEvent(PlayerEventsEnum.PLAYER_ANGEL_CHANGED));
   }
 
@@ -303,8 +335,8 @@ class Player extends PhysicalObj {
       this.PlayerAngle = 0;
     }
     var rect: Rectangle = this.GetTestRect();
-    rect.x = this.x;
-    rect.y = this.y;
+    rect.x = rect.x + this.x;
+    rect.y = rect.y + this.y;
     var list: Array<PhysicalObj> = this._map.GetPhysicalObjects(rect, this);
     if (list.length > 0) {
       this.CollideObject(list);
@@ -337,7 +369,8 @@ class Player extends PhysicalObj {
   }
 
   static get BALL_POS(): Point {
-    return new Point(30, -20);
+    //return new Point(30, -20);
+    return new Point(-20, -60);
   }
 
   static get STAND(): string {

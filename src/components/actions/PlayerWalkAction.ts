@@ -1,4 +1,5 @@
 import { Point } from "@pixi/math";
+import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
 import SoundManager from "../managers/SoundManager";
 import Player from "../physics/Player";
@@ -13,7 +14,7 @@ class PlayerWalkAction extends BaseAction {
 
   Stop(): void {
     this._isFinished = true;
-    this._player.DoAction(Player.STOP);
+    this._player.DoAction(PlayerEventsEnum.STOP);
   }
 
   Execute(): void {
@@ -23,7 +24,7 @@ class PlayerWalkAction extends BaseAction {
       pos = this._player.GetNextWalkPoint();
       if (pos) {
         this._player.Pos = pos;
-        this._player.DoAction(Player.WALK);
+        this._player.DoAction(PlayerEventsEnum.WALK);
         this._isFinished = false;
         SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT044);
       } else {

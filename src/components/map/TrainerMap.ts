@@ -34,8 +34,8 @@ class TrainerMap extends Sprite {
     this._objects.forEach(function (phy) {
       if (phy != except && phy.IsLiving && phy.CanCollided) {
         t = phy.GetTestRect();
-        t.x = phy.x;
-        t.y = phy.y;
+        t.x = t.x + phy.x;
+        t.y = t.y + phy.y;
         if (t.intersects(rect)) {
           temp.push(phy);
         }

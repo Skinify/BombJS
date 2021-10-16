@@ -1,8 +1,8 @@
 import { Point } from "@pixi/math";
+import BallSPAsset from "../assets/BallSPAsset";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
-import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
-import SoundManager from "../managers/SoundManager";
 import Player from "../physics/Player";
+import SimpleBomb from "../physics/SimpleBomb";
 import BaseAction from "./base/BaseAction";
 
 class ShootAction extends BaseAction {
@@ -38,43 +38,49 @@ class ShootAction extends BaseAction {
 
   Stop(): void {
     this._isFinished = true;
-    this._player.DoAction(Player.STOP);
+    this._player.DoAction(PlayerEventsEnum.STOP);
   }
 
   Execute(): void {
-    /*
     let v;
-    var bomb: SimpleBomb = null;
+    var bomb: SimpleBomb | null = null;
     this._count++;
     if (this._count > 15) {
-      v = Point.polar(this._force, (this._angle / 180) * Math.PI);
+      v = this.Polar(this._force, (this._angle / 180) * Math.PI);
       bomb = null;
       if (this._isSpecial) {
         bomb = new SimpleBomb(this._player, new BallSPAsset());
         //SoundManager.instance.play("075");
-        bomb.bombSound = "095";
+        bomb.BombSound = "095";
       } else if (this._isFly) {
-        bomb = new SimpleBomb(this._player, new TSBallAsset());
+        //bomb = new SimpleBomb(this._player, new TSBallAsset());
+        bomb = new SimpleBomb(this._player, new BallSPAsset());
         //SoundManager.instance.play("023");
-        bomb.bombSound = "096";
-        bomb.isFly = true;
+        bomb.BombSound = "096";
+        bomb.IsFly = true;
       } else {
-        bomb = new SimpleBomb(this._player, new BallN());
+        //bomb = new SimpleBomb(this._player, new BallN());
+        bomb = new SimpleBomb(this._player, new BallSPAsset());
         //SoundManager.instance.play("033");
-        bomb.bombSound = "095";
+        bomb.BombSound = "095";
       }
-      bomb.setSpeedXY(v);
-      bomb.pos = this._pos;
-      this._player.Map.addPhysical(bomb);
-      bomb.startMoving();
-      Player.SHOOT;
+      bomb.SetSpeedXY(v);
+      bomb.Pos = this._pos;
+      this._player.Map.AddPhysical(bomb);
+      bomb.StartMoving();
       this._player.DoAction(PlayerEventsEnum.SHOOT);
       this._isFinished = true;
-    }*/
+    }
   }
 
   Connect(action: BaseAction): boolean {
     return action instanceof ShootAction;
+  }
+
+  Polar(r: number, theta: number): Point {
+    let x = r * Math.cos(theta);
+    let y = r * Math.sin(theta);
+    return new Point(x, y);
   }
 }
 

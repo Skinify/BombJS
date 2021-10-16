@@ -44,7 +44,7 @@ class PhysicalObj extends Physics {
   GetAngleTwoPoint(point1: Point, point2: Point): number {
     var disX: number = point1.x - point2.x;
     var disY: number = point1.y - point2.y;
-    return this.RadianToAngle(Math.atan2(disY, disX));
+    return Math.floor(this.RadianToAngle(Math.atan2(disY, disX)));
   }
 
   IsPlayer(): boolean {
