@@ -3,7 +3,8 @@ import TrainerMap from "../map/TrainerMap";
 import Player from "../physics/Player";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import HudView from "../view/HudView";
-import KeyBoardEvent from "../events/KeyboardEvent";
+import KeyboardEvent from "../events/KeyboardEvent";
+import KeyboardKeysEnum from "../enuns/gameEnuns/KeyboardKeysEnum";
 
 import BaseScene from "./base/BaseScene";
 import FlagAsset from "../assets/FlagAsset";
@@ -47,6 +48,7 @@ class Fight extends BaseScene {
     this.addChild(this._flag);
     this._flag.x = 400;
     this._flag.y = 350;
+    this.SetupEvents();
     return this;
   }
 
@@ -67,6 +69,74 @@ class Fight extends BaseScene {
          _propBar.btnProp1.visible = true;
          SoundManager.instance.play("1001");
          nextStep();*/
+  }
+
+  SetupEvents(): void {
+    let leftEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_LEFT);
+    leftEvent.press = () => {
+      this._player.Direction = -1;
+      this._player.Walk();
+    };
+    leftEvent.release = () => {
+      this._player.StopWalk();
+    };
+
+    let rightEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_RIGHT);
+    rightEvent.press = () => {
+      this._player.Direction = 1;
+      this._player.Walk();
+    };
+    rightEvent.release = () => {
+      this._player.StopWalk();
+    };
+
+    let upArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_UP);
+    upArrowEvent.press = () => {
+      this._player.GunAngle = this._player.GunAngle + 1;
+    };
+    upArrowEvent.hold = () => {
+      this._player.GunAngle = this._player.GunAngle + 1;
+    };
+
+    let downArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_DOWN);
+    downArrowEvent.press = () => {
+      this._player.GunAngle = this._player.GunAngle - 1;
+    };
+    downArrowEvent.hold = () => {
+      this._player.GunAngle = this._player.GunAngle - 1;
+    };
+
+    let spaceEvent = KeyboardEvent(KeyboardKeysEnum.SPACE);
+    spaceEvent.press = () => {
+      if (this._player.Force >= Player.FORCE_MAX) {
+        this._player.ForceDir = -1;
+      }
+      this._player.Force += this._player.ForceDir * 24;
+      //SoundManager.instance.play("020",false,false);
+      if (this._player.Force < 0) {
+        //SoundManager.instance.stop("020");
+        this._player.BeginNewTurn();
+      }
+    };
+    spaceEvent.release = () => {
+      this._player.StopWalk();
+      if (this._player.IsAttacking) {
+        this._player.IsAttacking = false;
+        this._player.Shoot();
+        this._player.ForceDir = 1;
+      }
+    };
+    spaceEvent.hold = () => {
+      if (this._player.Force >= Player.FORCE_MAX) {
+        this._player.ForceDir = -1;
+      }
+      this._player.Force += this._player.ForceDir * 24;
+      //SoundManager.instance.play("020",false,false);
+      if (this._player.Force < 0) {
+        //SoundManager.instance.stop("020");
+        this._player.BeginNewTurn();
+      }
+    };
   }
 }
 

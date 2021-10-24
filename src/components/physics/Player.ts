@@ -1,4 +1,4 @@
-import { Point, Rectangle, Sprite, Texture } from "pixi.js";
+import { Point, Rectangle, Sprite } from "pixi.js";
 import BaseAction from "../actions/base/BaseAction";
 import PlayerWalkAction from "../actions/PlayerWalkAction";
 import BloodAsset from "../assets/BloodAsset";
@@ -7,10 +7,8 @@ import PlayerAsset from "../assets/PlayerAsset";
 import TakeAimAsset from "../assets/TakeAimAsset";
 import PlayerEvent from "../events/PlayerEvent";
 import PhysicalObj from "./PhysicalObj";
-import KeyboardEvent from "../events/KeyboardEvent";
 import ActionManager from "../managers/ActionManager";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
-import KeyboardKeysEnum from "../enuns/gameEnuns/KeyboardKeysEnum";
 import ShootAction from "../actions/ShootAction";
 
 class Player extends PhysicalObj {
@@ -81,56 +79,7 @@ class Player extends PhysicalObj {
     this._isFly = false;
     this._blood = 100;
     this._isLiving = true;
-    this.SetupMov();
-  }
-
-  SetupMov() {
-    let leftEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_LEFT);
-    leftEvent.press = () => {
-      this.Direction = -1;
-      this.Walk();
-    };
-    leftEvent.release = () => {
-      this.StopWalk();
-    };
-
-    let rightEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_RIGHT);
-    rightEvent.press = () => {
-      this.Direction = 1;
-      this.Walk();
-    };
-    rightEvent.release = () => {
-      this.StopWalk();
-    };
-
-    let upArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_UP);
-    upArrowEvent.press = () => {
-      this.GunAngle = this._gunAngle + 1;
-    };
-    upArrowEvent.hold = () => {
-      this.GunAngle = this._gunAngle + 1;
-    };
-
-    let downArrowEvent = KeyboardEvent(KeyboardKeysEnum.ARROW_DOWN);
-    downArrowEvent.press = () => {
-      this.GunAngle = this._gunAngle - 1;
-    };
-    downArrowEvent.hold = () => {
-      this.GunAngle = this._gunAngle - 1;
-    };
-
-    let spaceEvent = KeyboardEvent(KeyboardKeysEnum.SPACE);
-    spaceEvent.press = () => {
-      console.log("clicou");
-    };
-    spaceEvent.release = () => {
-      this.StopWalk();
-      console.log("soltou");
-      this.Shoot();
-    };
-    spaceEvent.hold = () => {
-      console.log("teste");
-    };
+    //this.SetupMov();
   }
 
   DoAction(action: string): void {
@@ -235,7 +184,9 @@ class Player extends PhysicalObj {
   }
 
   set Energy(value: number) {
+    if (this._energy == value) return;
     this._energy = value;
+    this._moveStrip.StaminaBarSize = this._energy / 240;
   }
 
   get Direction(): number {
@@ -245,7 +196,7 @@ class Player extends PhysicalObj {
   set Direction(value: number) {
     if (this._direction == value) return;
     this._direction = value;
-    this.scale.x = value;
+    this._player.scale.x = value;
   }
 
   set GunAngle(value: number) {
@@ -258,6 +209,10 @@ class Player extends PhysicalObj {
     this._gunAngle = value;
     this._takeAim.RotateAim(value);
     dispatchEvent(new PlayerEvent(PlayerEventsEnum.GUN_ANGEL_CHANGED));
+  }
+
+  get GunAngle(): number {
+    return this._gunAngle;
   }
 
   CanMoveDirection(dir: number): boolean {
@@ -313,21 +268,14 @@ class Player extends PhysicalObj {
       return;
     }
 
-    console.log(this.Direction);
-
-    if (this.Direction > 1) {
-      this._playerAngle = -Math.abs(value);
-      this._player.angle = -Math.abs(value);
-    } else {
-      this._playerAngle = Math.abs(value);
-      this._player.angle = Math.abs(value);
-    }
+    this._playerAngle = value;
+    this._player.angle = value;
 
     dispatchEvent(new PlayerEvent(PlayerEventsEnum.PLAYER_ANGEL_CHANGED));
   }
 
   set Pos(value: Point) {
-    //this._energy -= Math.abs(value.x - this.x);
+    this.Energy -= Math.abs(value.x - this.x);
     super.Pos = value;
     if (this._isLiving) {
       this.PlayerAngle = this.CalcObjectAngle();
@@ -341,6 +289,26 @@ class Player extends PhysicalObj {
     if (list.length > 0) {
       this.CollideObject(list);
     }
+  }
+
+  get Force(): number {
+    return this._force;
+  }
+
+  set Force(value: number) {
+    if (this._force == value) return;
+    if (value > Player.FORCE_MAX) {
+      value = Player.FORCE_MAX;
+    }
+    this._force = value;
+  }
+
+  get ForceDir(): number {
+    return this._forceDir;
+  }
+
+  set ForceDir(x: number) {
+    this._forceDir = x;
   }
 
   Update(dt: number): void {
