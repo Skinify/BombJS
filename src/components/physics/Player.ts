@@ -46,8 +46,12 @@ class Player extends PhysicalObj {
     this._player.addChild(this._body);
     this.addChild(this._player);
     this._smallBlood = new BloodAsset();
-    this._smallBlood.x = -20;
-    this._smallBlood.y = 16;
+    this._smallBlood.anchor.set(
+      this._smallBlood.height / 2,
+      this._smallBlood.width / 2
+    );
+    this._smallBlood.x = 10;
+    this._smallBlood.y = 0;
     this._bloodBarWidth = 100; ///REFATORAR
     this.addChild(this._smallBlood);
     this._takeAim = new TakeAimAsset();
@@ -71,7 +75,7 @@ class Player extends PhysicalObj {
     this._totalBlood = 100;
     this._isSpecial = false;
     this._isUsedSpecial = false;
-    this._currentAction = Player.STAND;
+    this._currentAction = PlayerEventsEnum.STAND;
     this._isAttacking = false;
     this._action = null;
     this._force = 0;
@@ -79,11 +83,13 @@ class Player extends PhysicalObj {
     this._isFly = false;
     this._blood = 100;
     this._isLiving = true;
-    //this.SetupMov();
   }
 
   DoAction(action: string): void {
-    if (this._currentAction != action && this._currentAction != Player.GHOST) {
+    if (
+      this._currentAction != action &&
+      this._currentAction != PlayerEventsEnum.GHOST
+    ) {
       this._currentAction = action;
       this._body.GotoAndPlay(action); ///REFATORAR
     }
@@ -115,7 +121,7 @@ class Player extends PhysicalObj {
     this._isSpecial = false;
     this._isAttacking = true;
     this._isFly = false;
-    dispatchEvent(new PlayerEvent(PlayerEventsEnum.BEGIN_NEW_TURN));
+    this.emit(PlayerEventsEnum.BEGIN_NEW_TURN);
   }
 
   set IsFly(value: boolean) {
@@ -127,7 +133,7 @@ class Player extends PhysicalObj {
       //SoundManager.instance.play("008");
       //addChild(new MovieClipWrapper(new UsingFlyAsset(),true,true));
     }
-    dispatchEvent(new PlayerEvent(PlayerEventsEnum.FLY_CHANGED));
+    this.emit(PlayerEventsEnum.FLY_CHANGED);
   }
 
   get ShootAngle(): number {
@@ -197,6 +203,7 @@ class Player extends PhysicalObj {
     if (this._direction == value) return;
     this._direction = value;
     this._player.scale.x = value;
+    this.emit(PlayerEventsEnum.DIR_CHANGED);
   }
 
   set GunAngle(value: number) {
@@ -208,7 +215,7 @@ class Player extends PhysicalObj {
     }
     this._gunAngle = value;
     this._takeAim.RotateAim(value);
-    dispatchEvent(new PlayerEvent(PlayerEventsEnum.GUN_ANGEL_CHANGED));
+    this.emit(PlayerEventsEnum.GUN_ANGEL_CHANGED);
   }
 
   get GunAngle(): number {
@@ -257,6 +264,7 @@ class Player extends PhysicalObj {
 
   set IsAttacking(value: boolean) {
     this._isAttacking = true;
+    this.emit(PlayerEventsEnum.ATTACKING_CHANGED);
   }
 
   ComputeFallNextXY(dt: number): Point {
@@ -271,7 +279,7 @@ class Player extends PhysicalObj {
     this._playerAngle = value;
     this._player.angle = value;
 
-    dispatchEvent(new PlayerEvent(PlayerEventsEnum.PLAYER_ANGEL_CHANGED));
+    this.emit(PlayerEventsEnum.PLAYER_ANGEL_CHANGED);
   }
 
   set Pos(value: Point) {
@@ -320,29 +328,9 @@ class Player extends PhysicalObj {
     return 35;
   }
 
-  static get PREPARE(): string {
-    return "PREPARE";
-  }
-
-  static get WALK(): string {
-    return "WALK";
-  }
-
-  static get GHOST(): string {
-    return "GHOST";
-  }
-
-  static get STOP(): string {
-    return "STOP";
-  }
-
   static get BALL_POS(): Point {
     //return new Point(30, -20);
     return new Point(-20, -60);
-  }
-
-  static get STAND(): string {
-    return "STAND";
   }
 
   static get FORCE_MAX(): number {
@@ -353,8 +341,17 @@ class Player extends PhysicalObj {
     return 65;
   }
 
-  static get SHOOT(): string {
-    return "SHOOT";
+  AddEventListener(event: any, listener: any): void {
+    this.addListener(event, listener);
+  }
+
+  Reset(): void {
+    this._isLiving = true;
+    this._currentAction = "";
+    this._player.y = 0;
+    //this._map.removeEventListener(MouseEvent.CLICK,this.__mouseClick);
+    this.DoAction(PlayerEventsEnum.STAND);
+    this.emit(PlayerEventsEnum.RESET);
   }
 }
 

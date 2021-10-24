@@ -1,12 +1,27 @@
-import { BaseTexture, Sprite, Texture } from "pixi.js";
+import { BaseTexture, Graphics, Sprite, Texture } from "pixi.js";
 import HudEnums from "../enuns/resourcesEnuns/HudEnum";
 import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
+import Player from "../physics/Player";
+import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 
 class AngleBarAsset extends Sprite implements IAsset {
-  constructor() {
+  private _angleHolder: Sprite;
+  private _sector: Graphics;
+  private _angleText: string;
+  private _lastShootAngle: any;
+  private _anglePointer: Sprite;
+  private _player: Player;
+
+  constructor(player: Player) {
     super(Texture.EMPTY);
+    this._angleHolder = new Sprite(Texture.EMPTY);
+    this._sector = this._DrawSector(0, 0, 55, 0, 90);
+    this._anglePointer = new Sprite();
+    this._angleText = "";
+    this._player = player;
+
     AssetsManager.Instance.LoadAssets([
       {
         key: HudEnums.LEFT_BAR,
@@ -47,12 +62,12 @@ class AngleBarAsset extends Sprite implements IAsset {
       new Texture(BaseTexture.from(args[HudEnums.ANGLE].data))
     );
 
-    let angleHolder = new Sprite(
+    this._angleHolder = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.ANGLE_HOLDER].data))
     );
 
-    let anglePointer = new Sprite(
-      new Texture(BaseTexture.from(args[HudEnums.ANGLE_POINTER].data))
+    this._anglePointer.texture = new Texture(
+      BaseTexture.from(args[HudEnums.ANGLE_POINTER].data)
     );
 
     let anglePointerTrace = new Sprite(
@@ -71,33 +86,195 @@ class AngleBarAsset extends Sprite implements IAsset {
     angle.y = 12;
     angle.x = 12;
 
-    angleHolder.scale.set(1.05, 1.05);
-    angleHolder.y = 7;
-    angleHolder.x = 7;
-
+    this._angleHolder.scale.set(1.05, 1.05);
+    this._angleHolder.y = 7;
+    this._angleHolder.x = 7;
+    //this._angleHolder.mask = this._sector;
     anglePointerHolder.x = 52;
     anglePointerHolder.y = 52;
 
     anglePointerTrace.x = 58;
     anglePointerTrace.y = 58;
     anglePointerTrace.anchor.set(0, 0.5);
+    anglePointerTrace.scale.x = 0.92;
 
-    anglePointer.anchor.set(0, 0.5);
-    anglePointer.x = 58;
-    anglePointer.y = 58;
+    this._anglePointer.anchor.set(0, 0.5);
+    this._anglePointer.x = 58;
+    this._anglePointer.y = 58;
+    this._anglePointer.scale.x = 0.92;
+
+    this._sector.pivot.set(0, 0.5);
+    this._sector.x = 58;
+    this._sector.y = 58;
+    this._sector.scale.set(0.9, 0.9);
 
     auxAttackButton.x = 130;
     auxAttackButton.y = 40;
 
-    this.addChild(angleHolder);
+    window.Temp = this._anglePointer;
+    this.addChild(this._sector);
+    this.addChild(this._angleHolder);
     this.addChild(anglePointerTrace);
-    this.addChild(anglePointer);
+    this.addChild(this._anglePointer);
     this.addChild(anglePointerHolder);
     this.addChild(angle);
     this.addChild(auxAttackButton);
+    this._Reset();
+    this._AddEventListeners();
   }
   OnLoadError(args: any): void {
     console.log(args);
+  }
+
+  private _ChangeSectorAngle(
+    graphics: Graphics,
+    x: number,
+    y: number,
+    radius: number,
+    sAngle: number,
+    lAngle: number
+  ) {
+    var nx: number = NaN;
+    var ny: number = NaN;
+    graphics.clear();
+    var sx: number = radius;
+    var sy: number = 0;
+    if (sAngle != 0) {
+      sx = Math.cos((sAngle * Math.PI) / 180) * radius;
+      sy = Math.sin((sAngle * Math.PI) / 180) * radius;
+    }
+    graphics.beginFill(0xc0dba2, 0.6);
+    graphics.moveTo(x, y);
+    graphics.lineTo(x + sx, y - sy);
+    var a: number = (lAngle * Math.PI) / 180 / lAngle;
+    var cos: number = Math.cos(a);
+    var sin: number = Math.sin(a);
+    for (var i: number = 0; i < lAngle; i++) {
+      nx = cos * sx - sin * sy;
+      ny = cos * sy + sin * sx;
+      sx = nx;
+      sy = ny;
+      graphics.lineTo(sx + x, -sy + y);
+    }
+    graphics.lineTo(x, y);
+    graphics.endFill();
+  }
+
+  private _DrawSector(
+    x: number,
+    y: number,
+    radius: number,
+    sAngle: number,
+    lAngle: number
+  ): Graphics {
+    var nx: number = NaN;
+    var ny: number = NaN;
+    var graphics: Graphics = new Graphics();
+    var sx: number = radius;
+    var sy: number = 0;
+    if (sAngle != 0) {
+      sx = Math.cos((sAngle * Math.PI) / 180) * radius;
+      sy = Math.sin((sAngle * Math.PI) / 180) * radius;
+    }
+
+    graphics.beginFill(0xc0dba2, 0.6);
+    graphics.moveTo(x, y);
+    graphics.lineTo(x + sx, y - sy);
+    var a: number = (lAngle * Math.PI) / 180 / lAngle;
+    var cos: number = Math.cos(a);
+    var sin: number = Math.sin(a);
+    for (var i: number = 0; i < lAngle; i++) {
+      nx = cos * sx - sin * sy;
+      ny = cos * sy + sin * sx;
+      sx = nx;
+      sy = ny;
+      graphics.lineTo(sx + x, -sy + y);
+    }
+    graphics.lineTo(x, y);
+    graphics.endFill();
+
+    return graphics;
+  }
+
+  private _WeapAngle(): void {
+    console.log("FODa");
+    var temp: number = 0;
+    if (this._player.Direction == -1) {
+      temp = 0;
+    } else {
+      temp = 180;
+    }
+    if (this._player.GunAngle < 0) {
+      this._anglePointer.angle =
+        360 - (this._player.GunAngle - 180 + temp) * this._player.Direction;
+    } else {
+      this._anglePointer.angle =
+        360 - (this._player.GunAngle + 180 + temp) * this._player.Direction;
+    }
+    this._lastShootAngle = this._player.GunAngle;
+    this._angleText = (
+      this._player.GunAngle +
+      this._player.GunAngle * -1 * this._player.Direction
+    ).toString();
+  }
+
+  private _Reset(): void {
+    this._ChangeSectorAngle(
+      this._sector,
+      0,
+      0,
+      55,
+      Player.MIN_ANGLE,
+      Player.MAX_ANGLE - Player.MIN_ANGLE
+    );
+  }
+
+  private _ChangeDirection(): void {
+    if (this._player.Direction == -1) {
+      this._sector.scale.set(-0.9, 0.9);
+      this._anglePointer.scale.y = -1;
+    } else {
+      this._sector.scale.set(0.9, 0.9);
+      this._anglePointer.scale.y = 1;
+    }
+    this._WeapAngle();
+  }
+
+  private _ChangeAngle(): void {
+    /*
+    var dis:number = this._anglePointer.rotation - this._player.PlayerAngle;
+    arrowSub.rotation = this._player.PlayerAngle;
+    _recordRotation += dis;
+    arrowSub.arrowClone_mc.rotation = _recordRotation;
+    rotation_txt.text = String(this._player.PlayerAngle +this._player.PlayerAngle* -1 * this._player.Direction);*/
+  }
+
+  private _SetArrowClone(): void {}
+
+  private _FlyChanged(): void {}
+
+  private _PlayerDie(): void {}
+
+  private _AddEventListeners(): void {
+    this._player.on(
+      PlayerEventsEnum.GUN_ANGEL_CHANGED,
+      this._WeapAngle.bind(this)
+    );
+    this._player.on(
+      PlayerEventsEnum.DIR_CHANGED,
+      this._ChangeDirection.bind(this)
+    );
+    this._player.on(
+      PlayerEventsEnum.PLAYER_ANGEL_CHANGED,
+      this._ChangeAngle.bind(this)
+    );
+    this._player.on(
+      PlayerEventsEnum.ATTACKING_CHANGED,
+      this._SetArrowClone.bind(this)
+    );
+    this._player.on(PlayerEventsEnum.FLY_CHANGED, this._FlyChanged.bind(this));
+    this._player.on(PlayerEventsEnum.DIE, this._PlayerDie.bind(this));
+    this._player.on(PlayerEventsEnum.RESET, this._Reset.bind(this));
   }
 }
 

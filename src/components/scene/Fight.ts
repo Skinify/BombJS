@@ -19,7 +19,7 @@ class Fight extends BaseScene {
     super();
     this._map = new TrainerMap();
     this._player = new Player();
-    this._hud = new HudView();
+    this._hud = new HudView(this._player);
     this._flag = new FlagAsset();
   }
 
@@ -35,11 +35,12 @@ class Fight extends BaseScene {
     );
     this._player.addListener(PlayerEventsEnum.ADD_PROP, this.AddProp);
     this._map.AddPhysical(this._player);
-    this._player.x = 800;
-    this._player.y = 123;
+    this._player.x = 600;
+    this._player.y = 223;
     this._player.StartMoving();
     this._player.BeginNewGame();
     this._player.BeginNewTurn();
+    this._player.Direction = -1;
     this._hud.x = 0;
     this._hud.y = 0;
     this._player.interactive = true;

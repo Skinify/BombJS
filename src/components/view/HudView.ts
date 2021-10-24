@@ -6,6 +6,7 @@ import PlayerImageAsset from "../assets/PlayerImageAsset";
 import SpecialBarAsset from "../assets/SpecialBarAsset";
 import PropBarAsset from "../assets/PropBarAsset";
 import SmallMapAsset from "../assets/SmallMapAsset";
+import Player from "../physics/Player";
 
 class HudView extends Container {
   private _angleBar: AngleBarAsset;
@@ -15,9 +16,9 @@ class HudView extends Container {
   private _propBar: PropBarAsset;
   private _smallMap: SmallMapAsset;
   private _playerImage: PlayerImageAsset;
-  constructor() {
+  constructor(player: Player) {
     super();
-    this._angleBar = new AngleBarAsset();
+    this._angleBar = new AngleBarAsset(player);
     this._powerBar = new SpecialBarAsset();
     this._flyButton = new FlyButtonAsset();
     this._forceBar = new ForceBarAsset();
