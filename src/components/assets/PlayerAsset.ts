@@ -67,7 +67,7 @@ class PlayerAsset extends AnimatedSprite implements IAsset {
     ];
 
     super.textures = this._playerSheet["STAND"];
-    this.animationSpeed = 0.3;
+    this.animationSpeed = 0.2;
     this.loop = true;
     this.play();
   }

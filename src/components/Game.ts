@@ -1,5 +1,6 @@
 import { Application } from "pixi.js";
 import SceneEnum from "./enuns/gameEnuns/SceneEnum";
+import MessageView from "./htmlElements/MessageView";
 import SceneManager from "./managers/SceneManager";
 
 class Game extends HTMLElement {
@@ -20,6 +21,10 @@ class Game extends HTMLElement {
     this.appendChild(this.app.view);
     this.app.stage.interactive = true;
     this.app.stage.interactiveChildren = true;
+
+    this.appendChild(new MessageView());
+
+    window.bombGame = this;
   }
 
   connectedCallback() {

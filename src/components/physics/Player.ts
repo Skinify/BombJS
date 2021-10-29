@@ -34,6 +34,7 @@ class Player extends PhysicalObj {
   private _forceDir: number;
   private _isFly: boolean;
   private _blood: number;
+  private _walkVelocity: number;
 
   constructor() {
     super(10, 100);
@@ -41,7 +42,8 @@ class Player extends PhysicalObj {
     this._body = new PlayerAsset();
     this._body.y = -90;
     this._body.x = -57;
-    window.Temp = this._body;
+    this._walkVelocity = 0.8;
+    window.temp = this._body;
     this._player = new Sprite();
     this._player.addChild(this._body);
     this.addChild(this._player);
@@ -207,6 +209,7 @@ class Player extends PhysicalObj {
   }
 
   set GunAngle(value: number) {
+    console.log(value);
     if (this._gunAngle == value) {
       return;
     }
@@ -226,13 +229,17 @@ class Player extends PhysicalObj {
     return !this._map.IsOutMap(this.x + 17 * dir, this.y);
   }
 
+  get WalkVelocity(): number {
+    return this._walkVelocity;
+  }
+
   GetNextWalkPoint(): Point | null {
     var tx: number = NaN;
     var ty: number = NaN;
     var i: number = 0;
     var j: number = 0;
     if (this.CanMoveDirection(this._direction)) {
-      tx = this.x + this._direction * 2;
+      tx = this.x + this._direction * this._walkVelocity;
       ty = this.y;
       if (this.CanStand(tx, ty)) {
         for (i = 1; i < 10; i++) {
@@ -282,8 +289,12 @@ class Player extends PhysicalObj {
     this.emit(PlayerEventsEnum.PLAYER_ANGEL_CHANGED);
   }
 
+  get PlayerAngle(): number {
+    return this._playerAngle;
+  }
+
   set Pos(value: Point) {
-    this.Energy -= Math.abs(value.x - this.x);
+    //this.Energy -= Math.abs(value.x - this.x);
     super.Pos = value;
     if (this._isLiving) {
       this.PlayerAngle = this.CalcObjectAngle();

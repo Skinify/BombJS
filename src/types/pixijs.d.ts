@@ -19,8 +19,10 @@ declare module "pixi.js" {
 
 declare global {
   interface Window {
-    Temp: any;
+    temp: any;
+    bombGame: Game;
   }
 }
 
-window.Temp = window.Temp || {};
+window.temp = window.temp || {};
+window.bombGame = window.bombGame || {};

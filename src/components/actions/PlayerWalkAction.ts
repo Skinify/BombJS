@@ -30,7 +30,8 @@ class PlayerWalkAction extends BaseAction {
       } else {
         this._player.StopMoving();
         this._isFinished = true;
-        tx = this._player.x + this._player.Direction * 2;
+        tx =
+          this._player.x + this._player.Direction * this._player.WalkVelocity;
         if (
           this._player.CanMoveDirection(this._player.Direction) &&
           this._player.CanStand(tx, this._player.y) == false

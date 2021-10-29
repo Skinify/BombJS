@@ -1,4 +1,11 @@
-import { BaseTexture, Graphics, Sprite, Texture } from "pixi.js";
+import {
+  BaseTexture,
+  Container,
+  Graphics,
+  Sprite,
+  Text,
+  Texture,
+} from "pixi.js";
 import HudEnums from "../enuns/resourcesEnuns/HudEnum";
 import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
@@ -9,18 +16,36 @@ import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 class AngleBarAsset extends Sprite implements IAsset {
   private _angleHolder: Sprite;
   private _sector: Graphics;
-  private _angleText: string;
   private _lastShootAngle: any;
   private _anglePointer: Sprite;
   private _player: Player;
+  private _container: Container;
+  private _recordRotation: number;
+  private _angleText: Text;
 
   constructor(player: Player) {
     super(Texture.EMPTY);
     this._angleHolder = new Sprite(Texture.EMPTY);
     this._sector = this._DrawSector(0, 0, 55, 0, 90);
     this._anglePointer = new Sprite();
-    this._angleText = "";
+    this._angleText = new Text("This is a PixiJS text", {
+      align: "right",
+      fontFamily: "Arial",
+      fontWeight: "bold",
+      fontSize: 16,
+      stroke: "black",
+      strokeThickness: 3,
+      fill: 0xffffff,
+      dropShadow: true,
+      dropShadowAlpha: 0.6,
+      dropShadowDistance: 0,
+      dropShadowAngle: 0,
+      letterSpacing: -0.5,
+      dropShadowBlur: 10,
+    });
     this._player = player;
+    this._container = new Container();
+    this._recordRotation = 0;
 
     AssetsManager.Instance.LoadAssets([
       {
@@ -87,9 +112,14 @@ class AngleBarAsset extends Sprite implements IAsset {
     angle.x = 12;
 
     this._angleHolder.scale.set(1.05, 1.05);
-    this._angleHolder.y = 7;
-    this._angleHolder.x = 7;
-    //this._angleHolder.mask = this._sector;
+    this._angleHolder.pivot.set(
+      this._angleHolder.height / 2,
+      this._angleHolder.width / 2
+    );
+    this._angleHolder.y = 61;
+    this._angleHolder.x = 61;
+    window.temp = this._angleHolder;
+
     anglePointerHolder.x = 52;
     anglePointerHolder.y = 52;
 
@@ -111,7 +141,10 @@ class AngleBarAsset extends Sprite implements IAsset {
     auxAttackButton.x = 130;
     auxAttackButton.y = 40;
 
-    window.Temp = this._anglePointer;
+    window.temp = this._angleText;
+
+    this._angleText.position.set(42, 68);
+
     this.addChild(this._sector);
     this.addChild(this._angleHolder);
     this.addChild(anglePointerTrace);
@@ -119,6 +152,8 @@ class AngleBarAsset extends Sprite implements IAsset {
     this.addChild(anglePointerHolder);
     this.addChild(angle);
     this.addChild(auxAttackButton);
+    this.addChild(this._angleText);
+
     this._Reset();
     this._AddEventListeners();
   }
@@ -197,7 +232,6 @@ class AngleBarAsset extends Sprite implements IAsset {
   }
 
   private _WeapAngle(): void {
-    console.log("FODa");
     var temp: number = 0;
     if (this._player.Direction == -1) {
       temp = 0;
@@ -212,10 +246,21 @@ class AngleBarAsset extends Sprite implements IAsset {
         360 - (this._player.GunAngle + 180 + temp) * this._player.Direction;
     }
     this._lastShootAngle = this._player.GunAngle;
-    this._angleText = (
+    this._AngleText =
       this._player.GunAngle +
-      this._player.GunAngle * -1 * this._player.Direction
-    ).toString();
+      this._player.PlayerAngle * -1 * this._player.Direction;
+  }
+
+  private set _AngleText(value: number) {
+    this._angleText.text = value.toString();
+    let valueLenght = value.toString().length;
+    if (valueLenght === 1) {
+      this._angleText.x = 52;
+    } else if (valueLenght === 2) {
+      this._angleText.x = 48;
+    } else {
+      this._angleText.x = 44;
+    }
   }
 
   private _Reset(): void {
@@ -241,12 +286,30 @@ class AngleBarAsset extends Sprite implements IAsset {
   }
 
   private _ChangeAngle(): void {
-    /*
-    var dis:number = this._anglePointer.rotation - this._player.PlayerAngle;
-    arrowSub.rotation = this._player.PlayerAngle;
-    _recordRotation += dis;
-    arrowSub.arrowClone_mc.rotation = _recordRotation;
-    rotation_txt.text = String(this._player.PlayerAngle +this._player.PlayerAngle* -1 * this._player.Direction);*/
+    var dis: number = this._anglePointer.rotation - this._player.PlayerAngle;
+    this._sector.angle = this._player.PlayerAngle;
+    this._angleHolder.angle = this._player.PlayerAngle;
+
+    var temp: number = 0;
+    if (this._player.Direction == -1) {
+      temp = 0;
+    } else {
+      temp = 180;
+    }
+
+    if (this._player.GunAngle < 0) {
+      this._anglePointer.angle =
+        360 -
+        (this._player.GunAngle - 180 + temp) * this._player.Direction +
+        this._player.PlayerAngle;
+    } else {
+      this._anglePointer.angle =
+        360 -
+        (this._player.GunAngle + 180 + temp) * this._player.Direction +
+        this._player.PlayerAngle;
+    }
+
+    this._recordRotation += dis;
   }
 
   private _SetArrowClone(): void {}
