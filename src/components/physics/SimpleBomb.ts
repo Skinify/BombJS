@@ -1,4 +1,5 @@
 import { AnimatedSprite, Rectangle, Sprite, Texture } from "pixi.js";
+import BallSPAsset from "../assets/BallSPAsset";
 import PhysicalObj from "./PhysicalObj";
 import Player from "./Player";
 
@@ -7,11 +8,13 @@ class SimpleBomb extends PhysicalObj {
   private _blastMC: AnimatedSprite;
   private _isFly: boolean;
   private _bombSound: string;
-  constructor(player: Player, asset: Sprite) {
+  private _ball: BallSPAsset;
+  constructor(player: Player) {
     super(10, 100, 1, 1);
     this._testRect = new Rectangle(-3, -3, 6, 6);
     this._player = player;
-    this.texture = asset.texture;
+    this._ball = new BallSPAsset();
+    this.addChild(this._ball)
     this._blastMC = new AnimatedSprite([Texture.EMPTY]);
     this._isFly = false;
     this._bombSound = "";
@@ -32,6 +35,7 @@ class SimpleBomb extends PhysicalObj {
       this._player.Pos = this.Pos;
       this._player.StartMoving();
     }
+    console.log("BOmmmb")
     //SoundManager.instance.play(bombSound);
     this.Die();
   }
@@ -45,10 +49,12 @@ class SimpleBomb extends PhysicalObj {
   }
 
   override CollideGround(): void {
+    console.log("Colide")
     this.Bomb();
   }
 
   override Die(): void {
+    console.log("SHINEE")
     super.Die();
     if (this._map) {
       this._map.RemovePhysical(this);

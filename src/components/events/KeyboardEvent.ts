@@ -19,14 +19,8 @@ export default (value) => {
           key.holdTimeout = setTimeout(() => {
             key.holdInterval = setInterval(() => {
               key.hold();
-            }, key.holdFrequency);
+            }, /*key.holdFrequency*/ 30);
           }, 100);
-
-          /*
-          key.holdInterval = setInterval(() => {
-            key.hold();
-            key.holdFrequency--;
-          }, key.holdFrequency);*/
         }
       }
       key.isDown = true;

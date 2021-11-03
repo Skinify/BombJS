@@ -114,14 +114,14 @@ class Player extends PhysicalObj {
     this._isUsedProp = false;
     this._isUsedSpecial = false;
     this._force = 0;
-    this._energy = 240;
+    this.Energy = 240;
     if (this.IsLiving) {
       this._dander = 200;
     } else {
       this._dander = 0;
     }
     this._isSpecial = false;
-    this._isAttacking = true;
+    this.IsAttacking = true;
     this._isFly = false;
     this.emit(PlayerEventsEnum.BEGIN_NEW_TURN);
   }
@@ -161,7 +161,7 @@ class Player extends PhysicalObj {
 
   get ShootPos(): Point {
     var p: Point = this._player.getGlobalPosition(Player.BALL_POS);
-    return this.toLocal(p);
+    return this._map.toLocal(p);
   }
 
   UseProp(): void {
@@ -209,7 +209,6 @@ class Player extends PhysicalObj {
   }
 
   set GunAngle(value: number) {
-    console.log(value);
     if (this._gunAngle == value) {
       return;
     }
@@ -274,6 +273,10 @@ class Player extends PhysicalObj {
     this.emit(PlayerEventsEnum.ATTACKING_CHANGED);
   }
 
+  get IsAttacking() : boolean{
+    return this._isAttacking
+  }
+
   ComputeFallNextXY(dt: number): Point {
     return new Point(this.x, this.y + 6);
   }
@@ -320,6 +323,7 @@ class Player extends PhysicalObj {
       value = Player.FORCE_MAX;
     }
     this._force = value;
+    this.emit(PlayerEventsEnum.FORCE_CHANGED);
   }
 
   get ForceDir(): number {

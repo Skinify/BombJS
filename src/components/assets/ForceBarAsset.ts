@@ -3,12 +3,21 @@ import HudEnums from "../enuns/resourcesEnuns/HudEnum";
 import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
+import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
+import Player from "../physics/Player";
 
 class ForceBarAsset extends Sprite implements IAsset {
   private _forceMarker: Sprite;
-  constructor() {
+  private _force: any;
+  private _forceTrace: any;
+  private _player: Player;
+  private _recordeWidth: any;
+  private _teste : number;
+  constructor(player : Player) {
     super(Texture.EMPTY);
     this._forceMarker = new Sprite(Texture.EMPTY);
+    this._player = player;
+    this._teste = 0;
     AssetsManager.Instance.LoadAssets([
       {
         key: HudEnums.FORCE_BAR,
@@ -49,11 +58,11 @@ class ForceBarAsset extends Sprite implements IAsset {
     forceMeter.buttonMode = true;
     forceMeter.interactive = true;
 
-    let force = new Sprite(
+    this._force = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.FORCE].data))
     );
 
-    let forceTrace = new Sprite(
+    this._forceTrace = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.FORCE_TRACE].data))
     );
 
@@ -64,19 +73,47 @@ class ForceBarAsset extends Sprite implements IAsset {
     this._forceMarker.position.set(200, 26);
 
     forceMeter.position.set(84, 37);
-    force.position.set(84, 38);
-    forceTrace.position.set(84, 38);
-    force.width = 100;
-    forceTrace.width = 250;
+    this._force.position.set(84, 38);
+    this._forceTrace.position.set(84, 38);
+    this._force.width = 100;
+    this._forceTrace.width = 250;
 
-    this.addChild(forceTrace);
-    this.addChild(force);
+    this.addChild(this._forceTrace);
+    this.addChild(this._force);
     this.addChild(forceMeter);
     this.addChild(this._forceMarker);
+    
+    window.temp = this._force
+
+    this._player.on(
+      PlayerEventsEnum.BEGIN_NEW_TURN,
+      this._BeginNewTurn.bind(this)
+    );
+
+    this._player.on(
+      PlayerEventsEnum.FORCE_CHANGED,
+      this._ForceChanged.bind(this)
+    );
+
   }
   OnLoadError(args: any): void {
     console.log(args);
   }
+
+  _BeginNewTurn() : void {
+    this._force.width = 0;
+    this._forceTrace.width =  this._recordeWidth;
+    
+  }
+
+  _ForceChanged() : void {
+    this._force.width = Math.ceil(500 / Player.FORCE_MAX * this._player.Force);
+     if(this._player.IsAttacking)
+     {
+        this._recordeWidth = this._force.width;
+     }
+  }
+
 }
 
 export default ForceBarAsset;

@@ -21,7 +21,7 @@ class HudView extends Container {
     this._angleBar = new AngleBarAsset(player);
     this._powerBar = new SpecialBarAsset();
     this._flyButton = new FlyButtonAsset();
-    this._forceBar = new ForceBarAsset();
+    this._forceBar = new ForceBarAsset(player);
     this._propBar = new PropBarAsset();
     this._smallMap = new SmallMapAsset();
     this._playerImage = new PlayerImageAsset();

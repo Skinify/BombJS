@@ -43,24 +43,26 @@ class ShootAction extends BaseAction {
 
   Execute(): void {
     let v;
+    console.log("Exc bomb")
     var bomb: SimpleBomb | null = null;
     this._count++;
     if (this._count > 15) {
       v = this.Polar(this._force, (this._angle / 180) * Math.PI);
       bomb = null;
       if (this._isSpecial) {
-        bomb = new SimpleBomb(this._player, new BallSPAsset());
+        //bomb = new SimpleBomb(this._player, new BallSPAsset());
         //SoundManager.instance.play("075");
+        bomb = new SimpleBomb(this._player);
         bomb.BombSound = "095";
       } else if (this._isFly) {
         //bomb = new SimpleBomb(this._player, new TSBallAsset());
-        bomb = new SimpleBomb(this._player, new BallSPAsset());
+        bomb = new SimpleBomb(this._player);
         //SoundManager.instance.play("023");
         bomb.BombSound = "096";
         bomb.IsFly = true;
       } else {
         //bomb = new SimpleBomb(this._player, new BallN());
-        bomb = new SimpleBomb(this._player, new BallSPAsset());
+        bomb = new SimpleBomb(this._player);
         //SoundManager.instance.play("033");
         bomb.BombSound = "095";
       }
@@ -68,7 +70,7 @@ class ShootAction extends BaseAction {
       bomb.Pos = this._pos;
       this._player.Map.AddPhysical(bomb);
       bomb.StartMoving();
-      this._player.DoAction(PlayerEventsEnum.SHOOT);
+      this._player.DoAction(PlayerEventsEnum.STOP);
       this._isFinished = true;
     }
   }

@@ -17,6 +17,7 @@ class ActionManager extends BaseManager {
   }
 
   Act(action: BaseAction): boolean {
+    console.log(action)
     var c: BaseAction | null = null;
     for (var i: number = 0; i < this._queue.length; i++) {
       c = this._queue[i];

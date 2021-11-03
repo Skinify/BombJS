@@ -22,8 +22,6 @@ class Game extends HTMLElement {
     this.app.stage.interactive = true;
     this.app.stage.interactiveChildren = true;
 
-    this.appendChild(new MessageView());
-
     window.bombGame = this;
   }
 

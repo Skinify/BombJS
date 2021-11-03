@@ -22,7 +22,6 @@ class AssetsManager extends BaseManager {
   LoadAsset(key: string, path: string): Promise<LoaderResource> {
     dispatchEvent(new AssetLoadEvent(AssetLoadEventEnum.START_LOADING));
     let loader = new Loader();
-
     if (this._loadedAssets[key]) {
       dispatchEvent(new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING));
       return new Promise((resolve) => resolve(this._loadedAssets[key]));
@@ -31,6 +30,7 @@ class AssetsManager extends BaseManager {
         loader.add(key, path);
         loader.onError.add((x) => reject(x));
         loader.onComplete.add((loader, resources) => {
+          this._loadedAssets[key] = resources[key];
           dispatchEvent(
             new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING)
           );
@@ -39,6 +39,10 @@ class AssetsManager extends BaseManager {
         loader.load();
       });
     }
+  }
+
+  GetPreloaded(key: string): LoaderResource{
+    return this._loadedAssets[key];
   }
 
   LoadAssets(
@@ -68,6 +72,9 @@ class AssetsManager extends BaseManager {
           dispatchEvent(
             new AssetLoadEvent(AssetLoadEventEnum.FINISHED_LOADING)
           );
+          for(let i in resources){
+            this._loadedAssets[i] = resources[i]
+          }
           resolve(resources);
         });
         loader.load();
