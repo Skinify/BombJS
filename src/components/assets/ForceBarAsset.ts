@@ -71,6 +71,7 @@ class ForceBarAsset extends Sprite implements IAsset {
     );
 
     this._forceMarker.position.set(200, 26);
+    this._forceMarker.visible = false
 
     forceMeter.position.set(84, 37);
     this._force.position.set(84, 38);
@@ -82,9 +83,7 @@ class ForceBarAsset extends Sprite implements IAsset {
     this.addChild(this._force);
     this.addChild(forceMeter);
     this.addChild(this._forceMarker);
-    
-    window.temp = this._force
-
+  
     this._player.on(
       PlayerEventsEnum.BEGIN_NEW_TURN,
       this._BeginNewTurn.bind(this)

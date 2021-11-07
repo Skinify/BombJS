@@ -35,7 +35,6 @@ class SimpleBomb extends PhysicalObj {
       this._player.Pos = this.Pos;
       this._player.StartMoving();
     }
-    console.log("BOmmmb")
     //SoundManager.instance.play(bombSound);
     this.Die();
   }
@@ -49,12 +48,10 @@ class SimpleBomb extends PhysicalObj {
   }
 
   override CollideGround(): void {
-    console.log("Colide")
     this.Bomb();
   }
 
   override Die(): void {
-    console.log("SHINEE")
     super.Die();
     if (this._map) {
       this._map.RemovePhysical(this);

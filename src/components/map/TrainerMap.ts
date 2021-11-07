@@ -44,6 +44,15 @@ class TrainerMap extends Sprite {
     return temp;
   }
 
+  Intersect(a: Rectangle, b: Rectangle): Rectangle {
+    let x = Math.max(a.x, b.x);
+    let num1 = Math.min(a.x + a.width, b.x + b.width);
+    let y = Math.max(a.y, b.y);
+    let num2 = Math.min(a.y + a.height, b.y + b.height);
+    if (num1 >= x && num2 >= y) return new Rectangle(x, y, num1 - x, num2 - y);
+    else return Rectangle.EMPTY;
+  }
+
   CanMove(x: number, y: number): boolean {
     return this.IsEmpty(x, y) && !this.IsOutMap(x, y);
   }

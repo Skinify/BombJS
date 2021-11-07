@@ -1,5 +1,4 @@
 import { Point } from "@pixi/math";
-import BallSPAsset from "../assets/BallSPAsset";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import Player from "../physics/Player";
 import SimpleBomb from "../physics/SimpleBomb";
@@ -34,11 +33,6 @@ class ShootAction extends BaseAction {
 
   Prepare(): void {
     this._player.DoAction(PlayerEventsEnum.SHOOT);
-  }
-
-  Stop(): void {
-    this._isFinished = true;
-    this._player.DoAction(PlayerEventsEnum.STOP);
   }
 
   Execute(): void {

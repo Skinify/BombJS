@@ -69,7 +69,7 @@ class PhysicalObj extends Physics {
     let t = 0;
     let rect;
     let list;
-    console.log("Fod")
+    //console.log("Fod")
     if (this.PointDistance(p, super.Pos) >= 1) {
       dx = Math.abs(p.x - super.x);
       dy = Math.abs(p.y - super.y);
@@ -157,7 +157,7 @@ class PhysicalObj extends Physics {
   CollideBy(phy: PhysicalObj): void {}
 
   FlyOutMap(): void {
-    console.log("Fly")
+    //console.log("Fly")
     this.Die();
   }
 

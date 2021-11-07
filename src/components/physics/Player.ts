@@ -43,7 +43,6 @@ class Player extends PhysicalObj {
     this._body.y = -90;
     this._body.x = -57;
     this._walkVelocity = 0.8;
-    window.temp = this._body;
     this._player = new Sprite();
     this._player.addChild(this._body);
     this.addChild(this._player);
@@ -160,7 +159,7 @@ class Player extends PhysicalObj {
   }
 
   get ShootPos(): Point {
-    var p: Point = this._player.getGlobalPosition(Player.BALL_POS);
+    var p: Point = this._player.toGlobal(Player.BALL_POS);
     return this._map.toLocal(p);
   }
 
@@ -269,7 +268,7 @@ class Player extends PhysicalObj {
   }
 
   set IsAttacking(value: boolean) {
-    this._isAttacking = true;
+    this._isAttacking = value;
     this.emit(PlayerEventsEnum.ATTACKING_CHANGED);
   }
 
@@ -344,8 +343,8 @@ class Player extends PhysicalObj {
   }
 
   static get BALL_POS(): Point {
-    //return new Point(30, -20);
-    return new Point(-20, -60);
+    return new Point(30, -20);
+    //return new Point(-20, -60);
   }
 
   static get FORCE_MAX(): number {

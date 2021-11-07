@@ -47,7 +47,6 @@ class Physics extends Sprite {
   }
 
   Update(dt: number): void {
-    console.log("updatando")
     if (this._isMoving && this._map) {
       this.UpdatePosition(dt);
     }
@@ -68,7 +67,6 @@ class Physics extends Sprite {
   }
 
   UpdatePosition(dt: number): void {
-    console.log("EAE")
     this.MoveTo(this.ComputeFallNextXY(dt));
   }
 
@@ -130,8 +128,8 @@ class Physics extends Sprite {
   }
 
   set Pos(value: Point) {
-    this.x = value.x;
-    this.y = value.y;
+    this.X = value.x;
+    this.Y = value.y;
   }
 
   get Pos(): Point {

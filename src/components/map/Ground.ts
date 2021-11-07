@@ -15,7 +15,7 @@ class Ground extends Tile {
     y = y < 0 ? 0 : y;
     h = y + h > this._boundsRect.height ? this._boundsRect.height - y : h;
     for (let i: number = 0; i < h; i++) {
-      if (!this.IsEmpty(x, y + 1)) {
+      if (!this.IsEmpty(x, y + i)) {
         return false;
       }
     }

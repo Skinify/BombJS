@@ -22,10 +22,12 @@ class AngleBarAsset extends Sprite implements IAsset {
   private _container: Container;
   private _recordRotation: number;
   private _angleText: Text;
+  private _anglePointerTrace: Sprite;
 
   constructor(player: Player) {
     super(Texture.EMPTY);
     this._angleHolder = new Sprite(Texture.EMPTY);
+    this._anglePointerTrace = new Sprite(Texture.EMPTY)
     this._sector = this._DrawSector(0, 0, 55, 0, 90);
     this._anglePointer = new Sprite();
     this._angleText = new Text("This is a PixiJS text", {
@@ -95,7 +97,7 @@ class AngleBarAsset extends Sprite implements IAsset {
       BaseTexture.from(args[HudEnums.ANGLE_POINTER].data)
     );
 
-    let anglePointerTrace = new Sprite(
+    this._anglePointerTrace = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.ANGLE_POINTER_TRACE].data))
     );
 
@@ -118,15 +120,16 @@ class AngleBarAsset extends Sprite implements IAsset {
     );
     this._angleHolder.y = 61;
     this._angleHolder.x = 61;
-    window.temp = this._angleHolder;
 
     anglePointerHolder.x = 52;
     anglePointerHolder.y = 52;
 
-    anglePointerTrace.x = 58;
-    anglePointerTrace.y = 58;
-    anglePointerTrace.anchor.set(0, 0.5);
-    anglePointerTrace.scale.x = 0.92;
+    this._anglePointerTrace.x = 58;
+    this._anglePointerTrace.y = 58;
+    this._anglePointerTrace.anchor.set(0, 0.5);
+    this._anglePointerTrace.scale.x = 0.92;
+
+    this._anglePointerTrace.visible = false
 
     this._anglePointer.anchor.set(0, 0.5);
     this._anglePointer.x = 58;
@@ -141,13 +144,11 @@ class AngleBarAsset extends Sprite implements IAsset {
     auxAttackButton.x = 130;
     auxAttackButton.y = 40;
 
-    window.temp = this._angleText;
-
     this._angleText.position.set(42, 68);
 
     this.addChild(this._sector);
     this.addChild(this._angleHolder);
-    this.addChild(anglePointerTrace);
+    this.addChild(this._anglePointerTrace);
     this.addChild(this._anglePointer);
     this.addChild(anglePointerHolder);
     this.addChild(angle);
@@ -312,7 +313,14 @@ class AngleBarAsset extends Sprite implements IAsset {
     this._recordRotation += dis;
   }
 
-  private _SetArrowClone(): void {}
+  private _SetArrowClone(): void {
+    if(!this._player.IsAttacking)
+    {
+      this._anglePointerTrace.visible = true;
+      this._recordRotation = this._anglePointer.angle
+      this._anglePointerTrace.angle = this._recordRotation;
+    }
+  }
 
   private _FlyChanged(): void {}
 

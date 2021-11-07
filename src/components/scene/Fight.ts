@@ -8,8 +8,6 @@ import KeyboardKeysEnum from "../enuns/gameEnuns/KeyboardKeysEnum";
 
 import BaseScene from "./base/BaseScene";
 import FlagAsset from "../assets/FlagAsset";
-import BallSPAsset from "../assets/BallSPAsset";
-import SimpleBomb from "../physics/SimpleBomb";
 import AssetsManager from "../managers/AssetsManager";
 import AttackEnum from "../enuns/resourcesEnuns/AttackEnum";
 import paths from '../../config/paths.json'
@@ -67,10 +65,6 @@ class Fight extends BaseScene {
     this._flag.x = 400;
     this._flag.y = 350;
     this.SetupEvents();
-
-      let teste = new SimpleBomb(this._player);
-      this.addChild(teste)
-
     return this;
   }
 

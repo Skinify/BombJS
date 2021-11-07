@@ -17,16 +17,10 @@ class BallSPAsset extends AnimatedSprite implements IAsset {
     this._shape = new Sprite(Texture.EMPTY);
     this._border = new Sprite(Texture.EMPTY);
     this._boon = new AnimatedSprite([Texture.EMPTY]);
-
     let ballAsset = AssetsManager.Instance.GetPreloaded(AttackEnum.BALL)
-
     this.texture = new Texture(BaseTexture.from(ballAsset.data));
-
-    AttackEnum.BOOM
-
   }
   OnLoad(args: LoaderResource | Dict<LoaderResource>): void {
-    console.log("Load")
     this.texture = new Texture(BaseTexture.from(args[AttackEnum.BALL].data));
   }
   
