@@ -28,42 +28,42 @@ class PlayerAsset extends AnimatedSprite implements IAsset {
     let h = 95;
     let ssheet = BaseTexture.from(args.data);
     this._playerSheet["STAND"] = [
-      new Texture(ssheet, new Rectangle(1 * w, 0, w, h)),
+      new Texture(ssheet, new Rectangle(0 * w, 0, w, h)),
     ];
 
     this._playerSheet["PREPARE"] = [
-      new Texture(ssheet, new Rectangle(1 * w, 0, w, h)),
+      new Texture(ssheet, new Rectangle(1 * w, 0 * h, w, h)),
     ];
 
     this._playerSheet["WALK"] = [
-      new Texture(ssheet, new Rectangle(2 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(2 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(3 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(4 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(5 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(6 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(7 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(8 * w, 0, w, h)),
-      new Texture(ssheet, new Rectangle(9 * w, 0, w, h)),
+      new Texture(ssheet, new Rectangle(2 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(2 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(3 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(4 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(5 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(6 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(7 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(8 * w, 0 * h, w, h)),
+      new Texture(ssheet, new Rectangle(9 * w, 0 * h, w, h)),
     ];
 
     this._playerSheet["GHOST"] = [
+      new Texture(ssheet, new Rectangle(10 * w, 2 * h, w, h)),
       new Texture(ssheet, new Rectangle(11 * w, 2 * h, w, h)),
-      new Texture(ssheet, new Rectangle(12 * w, 2 * h, w, h)),
     ];
 
     this._playerSheet["STOP"] = [
-      new Texture(ssheet, new Rectangle(1 * w, 0, w, h)),
+      new Texture(ssheet, new Rectangle(1 * w, 0 * h, w, h)),
     ];
     this._playerSheet["SHOOT"] = [
-      new Texture(ssheet, new Rectangle(5 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(6 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(7 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(8 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(9 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(10 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(4 * w, 2, w, h)),
-      new Texture(ssheet, new Rectangle(3 * w, 2, w, h)),
+      new Texture(ssheet, new Rectangle(2 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(3 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(4 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(5 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(6 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(7 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(8 * w, 2 * h, w, h)),
+      new Texture(ssheet, new Rectangle(9 * w, 2 * h, w, h)),
     ];
 
     super.textures = this._playerSheet["STAND"];

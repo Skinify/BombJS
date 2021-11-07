@@ -40,7 +40,7 @@ class ShootAction extends BaseAction {
  
     var bomb: SimpleBomb | null = null;
     this._count++;
-    if (this._count > 15) {
+    if (this._count > 60) {
       v = this.Polar(this._force, (this._angle / 180) * Math.PI);
       bomb = null;
       if (this._isSpecial) {
