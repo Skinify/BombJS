@@ -37,7 +37,7 @@ class ShootAction extends BaseAction {
 
   Execute(): void {
     let v;
-    console.log("Exc bomb")
+ 
     var bomb: SimpleBomb | null = null;
     this._count++;
     if (this._count > 15) {

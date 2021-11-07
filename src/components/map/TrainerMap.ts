@@ -72,7 +72,7 @@ class TrainerMap extends Sprite {
 
   Update(): void {
     this._objects.forEach((phy) => {
-      phy.Update(0.04);
+      phy.Update(0.018);
     });
     window.requestAnimationFrame(this.UpdateWrapper);
   }

@@ -61,7 +61,7 @@ class SimpleBomb extends PhysicalObj {
 
   override UpdatePosition(dt: number): void {
     super.UpdatePosition(dt);
-    this.rotation = (this.MotionAngle * 180) / Math.PI;
+    this.angle = (this.MotionAngle * 180) / Math.PI;
     this.scale._y = this.Vx > 0 ? 1 : -1;
   }
 }

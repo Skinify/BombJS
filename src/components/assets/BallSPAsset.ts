@@ -19,9 +19,10 @@ class BallSPAsset extends AnimatedSprite implements IAsset {
     this._boon = new AnimatedSprite([Texture.EMPTY]);
     let ballAsset = AssetsManager.Instance.GetPreloaded(AttackEnum.BALL)
     this.texture = new Texture(BaseTexture.from(ballAsset.data));
+    this.pivot.set(this.width/2, this.height/2);
   }
   OnLoad(args: LoaderResource | Dict<LoaderResource>): void {
-    this.texture = new Texture(BaseTexture.from(args[AttackEnum.BALL].data));
+    throw new Error("Method not implemented.");
   }
   
   OnLoadError(args: any): void {

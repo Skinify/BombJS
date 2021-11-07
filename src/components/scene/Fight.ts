@@ -11,6 +11,7 @@ import FlagAsset from "../assets/FlagAsset";
 import AssetsManager from "../managers/AssetsManager";
 import AttackEnum from "../enuns/resourcesEnuns/AttackEnum";
 import paths from '../../config/paths.json'
+import SimpleBomb from "../physics/SimpleBomb";
 
 class Fight extends BaseScene {
   private _map: TrainerMap;
@@ -49,7 +50,7 @@ class Fight extends BaseScene {
       this.BeginNewTurn
     );
     this._player.addListener(PlayerEventsEnum.ADD_PROP, this.AddProp);
-    this._map.AddPhysical(this._player);
+    this._map.AddPhysical(this._player)
     this._player.x = 600;
     this._player.y = 223;
     this._player.StartMoving();
