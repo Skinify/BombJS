@@ -11,7 +11,8 @@ import FlagAsset from "../assets/FlagAsset";
 import AssetsManager from "../managers/AssetsManager";
 import AttackEnum from "../enuns/resourcesEnuns/AttackEnum";
 import paths from '../../config/paths.json'
-import SimpleBomb from "../physics/SimpleBomb";
+import SoundManager from "../managers/SoundManager";
+import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
 
 class Fight extends BaseScene {
   private _map: TrainerMap;
@@ -32,10 +33,12 @@ class Fight extends BaseScene {
         path: `${paths.IMAGE_PATH}/attacks/${AttackEnum.BALL}.png`,
       },
       {
-        key: AttackEnum.BOOM,
-        path: `${paths.IMAGE_PATH}/attacks/${AttackEnum.BOOM}.png`,
-      },
+        key: AttackEnum.BOOM_SPRITESHEET,
+        path: `${paths.IMAGE_PATH}/attacks/${AttackEnum.BOOM_SPRITESHEET}.png`,
+      }
     ])
+
+    SoundManager.Instance.PreLoadSounds([SoundEffectEnum.SOUND_EFFECT095, SoundEffectEnum.SOUND_EFFECT020, SoundEffectEnum.SOUND_EFFECT044])
 
   }
 
@@ -129,9 +132,9 @@ class Fight extends BaseScene {
         this._player.ForceDir = -1;
       }
       this._player.Force += this._player.ForceDir * 24;
-      //SoundManager.instance.play("020",false,false);
+      SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT020);
       if (this._player.Force < 0) {
-        //SoundManager.instance.stop("020");
+        SoundManager.Instance.Stop(SoundEffectEnum.SOUND_EFFECT020);
         this._player.BeginNewTurn();
       }
     };
@@ -142,15 +145,17 @@ class Fight extends BaseScene {
         this._player.Shoot();
         this._player.ForceDir = 1;
       }
+      SoundManager.Instance.Stop(SoundEffectEnum.SOUND_EFFECT020);
+      SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT019);
     };
     spaceEvent.hold = () => {
       if (this._player.Force >= Player.FORCE_MAX) {
         this._player.ForceDir = -1;
       }
       this._player.Force += this._player.ForceDir * 24;
-      //SoundManager.instance.play("020",false,false);
+      SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT020,true);
       if (this._player.Force < 0) {
-        //SoundManager.instance.stop("020");
+        SoundManager.Instance.Stop(SoundEffectEnum.SOUND_EFFECT020);
         this._player.BeginNewTurn();
       }
     };

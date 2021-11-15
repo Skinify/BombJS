@@ -1,24 +1,27 @@
-import { Options, sound, SoundSourceMap } from "@pixi/sound";
+import { Options, Sound, SoundLibrary } from "@pixi/sound";
 import BaseManager from "./base/BaseManager";
 import paths from "../../config/paths.json";
 import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
 
 class SoundManager extends BaseManager {
-  private loadedSounds: Array<string>;
+  private _loadedSounds: {[indice:string] : Sound};
   private _musicVolume: number;
   private _effectsVolume: number;
   private _defaultPlayingOptions: Options;
   protected static _instance: SoundManager | null;
+  private _sound : SoundLibrary;
   private constructor() {
     super();
-    this.loadedSounds = [];
-    this._musicVolume = 100;
+    this._musicVolume = 50;
     this._effectsVolume = 100;
+    this._sound = new SoundLibrary();
     this._defaultPlayingOptions = {
       autoPlay: false,
       volume: this._musicVolume,
+      singleInstance:true,
       complete: (loadedSound) => loadedSound.resume(),
     };
+    this._loadedSounds = {}
   }
 
   static get Instance(): SoundManager {
@@ -28,44 +31,70 @@ class SoundManager extends BaseManager {
     return this._instance;
   }
 
-  Play(soundEffect: SoundEffectEnum, playMultiple: boolean = false): void {
+  Play(soundEffect: SoundEffectEnum, playMultiple: boolean = true, replaceSame = false): void {
     try {
-      if (!playMultiple) sound.stopAll();
+      if (!playMultiple) this._sound.stopAll();
       if (!this.IsSoundLoaded(soundEffect)) {
-        sound.add(soundEffect.toString(), {
+        let snd = Sound.from({
           ...this._defaultPlayingOptions,
-          url: `${paths.SOUND_PATH}/${soundEffect.toString()}.flv`,
-        });
+          url: `${paths.SOUND_PATH}/${soundEffect.toString()}.mp3`,
+        })
+        this._loadedSounds[soundEffect.toString()] = snd;
       } else {
-        sound.play(soundEffect.toString());
+        if(!replaceSame){
+          if(!this.IsPlaying(soundEffect))
+            this._loadedSounds[soundEffect.toString()].play();
+        }else{
+          this._loadedSounds[soundEffect.toString()].play();
+        }
       }
     } catch (ex) {
       console.log("Houve um erro ao reproduzir o som: " + ex);
     }
   }
 
+  IsPlaying(soundEffect : SoundEffectEnum) : boolean{
+    return this._loadedSounds[soundEffect.toString()].isPlaying;
+  }
+
   Stop(soundEffect: SoundEffectEnum): void {
-    sound.stop(soundEffect.toString());
+    console.log("T")
+    this._loadedSounds[soundEffect.toString()].stop();
   }
 
   StopAll() {
-    sound.stopAll();
+    for(let i in this._loadedSounds){
+      this._loadedSounds[i].stop()
+    }
   }
 
-  PreLoad(soundEffect: SoundEffectEnum): void {
+  PreLoadSound(soundEffect: SoundEffectEnum): void {
     if (!this.IsSoundLoaded(soundEffect)) {
-      sound.add(
-        soundEffect.toString(),
-        `${paths.SOUND_PATH}/${soundEffect.toString()}.flv`
-      );
+      let snd = Sound.from({
+        ...this._defaultPlayingOptions,
+        url: `${paths.SOUND_PATH}/${soundEffect.toString()}.mp3`,
+      })
+      this._loadedSounds[soundEffect.toString()] = snd;
+    }
+  }
+
+
+  PreLoadSounds(soundEffects: Array<SoundEffectEnum>): void {
+    for(let i = 0; i < soundEffects.length; i++){
+      let soundEffect = soundEffects[i];
+      if (!this.IsSoundLoaded(soundEffect)) {
+        let snd = Sound.from({
+          ...this._defaultPlayingOptions,
+          url: `${paths.SOUND_PATH}/${soundEffect.toString()}.mp3`,
+        })
+        this._loadedSounds[soundEffect.toString()] = snd;
+      }
     }
   }
 
   private IsSoundLoaded(sound: SoundEffectEnum): boolean {
-    for (let i: number = 0; i < this.loadedSounds.length; i++) {
-      this.loadedSounds[i] == sound.toString();
-      return true;
-    }
+    if(typeof this._loadedSounds[sound] !== "undefined")
+      return true
     return false;
   }
 }

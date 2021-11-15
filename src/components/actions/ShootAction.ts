@@ -1,5 +1,7 @@
 import { Point } from "@pixi/math";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
+import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
+import SoundManager from "../managers/SoundManager";
 import Player from "../physics/Player";
 import SimpleBomb from "../physics/SimpleBomb";
 import BaseAction from "./base/BaseAction";
@@ -45,18 +47,21 @@ class ShootAction extends BaseAction {
       bomb = null;
       if (this._isSpecial) {
         //bomb = new SimpleBomb(this._player, new BallSPAsset());
-        //SoundManager.instance.play("075");
+        
+        SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT075);
         bomb = new SimpleBomb(this._player);
         bomb.BombSound = "095";
       } else if (this._isFly) {
         //bomb = new SimpleBomb(this._player, new TSBallAsset());
         bomb = new SimpleBomb(this._player);
+        SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT023);
         //SoundManager.instance.play("023");
         bomb.BombSound = "096";
         bomb.IsFly = true;
       } else {
         //bomb = new SimpleBomb(this._player, new BallN());
         bomb = new SimpleBomb(this._player);
+        SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT033);
         //SoundManager.instance.play("033");
         bomb.BombSound = "095";
       }

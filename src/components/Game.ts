@@ -2,6 +2,7 @@ import { Application } from "pixi.js";
 import SceneEnum from "./enuns/gameEnuns/SceneEnum";
 import MessageView from "./htmlElements/MessageView";
 import SceneManager from "./managers/SceneManager";
+import SoundManager from "./managers/SoundManager";
 
 class Game extends HTMLElement {
   app: Application;

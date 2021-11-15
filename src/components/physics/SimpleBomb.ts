@@ -1,5 +1,9 @@
 import { AnimatedSprite, Rectangle, Sprite, Texture } from "pixi.js";
 import BallSPAsset from "../assets/BallSPAsset";
+import AttackEnum from "../enuns/resourcesEnuns/AttackEnum";
+import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
+import AssetsManager from "../managers/AssetsManager";
+import SoundManager from "../managers/SoundManager";
 import PhysicalObj from "./PhysicalObj";
 import Player from "./Player";
 
@@ -15,9 +19,30 @@ class SimpleBomb extends PhysicalObj {
     this._player = player;
     this._ball = new BallSPAsset();
     this.addChild(this._ball)
-    this._blastMC = new AnimatedSprite([Texture.EMPTY]);
     this._isFly = false;
     this._bombSound = "";
+
+    this._blastMC = new AnimatedSprite([Texture.EMPTY]);
+    this._blastMC.loop = false;
+
+    
+    let ssheet = AssetsManager.Instance.GetPreloaded(AttackEnum.BOOM_SPRITESHEET)
+    if(ssheet.texture){
+      let t = ssheet.texture.baseTexture;
+      let h = 240;
+      let w = 320;
+
+      let c = 0
+      let spriteObj:Array<Texture> = []
+      while(true){
+        spriteObj.push(new Texture(t, new Rectangle(c * w, 0, w, h)))
+        c++;
+        if(c == 16)
+          break;
+      } 
+
+      this._blastMC.textures = spriteObj
+    }
   }
 
   get Player(): Player {
@@ -26,8 +51,8 @@ class SimpleBomb extends PhysicalObj {
 
   Bomb(): void {
     if (this._blastMC) {
-      this._blastMC.x = this.x;
-      this._blastMC.y = this.y;
+      this._blastMC.x = this.x - 150;
+      this._blastMC.y = this.y - 120;
       this._map.addChild(this._blastMC);
       this._blastMC.play();
     }
@@ -35,7 +60,7 @@ class SimpleBomb extends PhysicalObj {
       this._player.Pos = this.Pos;
       this._player.StartMoving();
     }
-    //SoundManager.instance.play(bombSound);
+    SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT095);
     this.Die();
   }
 
