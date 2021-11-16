@@ -10,6 +10,9 @@ import PhysicalObj from "./PhysicalObj";
 import ActionManager from "../managers/ActionManager";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import ShootAction from "../actions/ShootAction";
+import SoundManager from "../managers/SoundManager";
+import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
+import FlyPropEffect from "../propEffects/FlyPropEffect";
 
 class Player extends PhysicalObj {
   protected _player: Sprite;
@@ -129,10 +132,11 @@ class Player extends PhysicalObj {
     if (this._isFly == value) {
       return;
     }
+
     this._isFly = value;
     if (this._isFly && this._isLiving) {
-      //SoundManager.instance.play("008");
-      //addChild(new MovieClipWrapper(new UsingFlyAsset(),true,true));
+      SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT008);
+      this.addChild(new FlyPropEffect(this));
     }
     this.emit(PlayerEventsEnum.FLY_CHANGED);
   }
@@ -194,6 +198,16 @@ class Player extends PhysicalObj {
     if (this._energy == value) return;
     this._energy = value;
     this._moveStrip.StaminaBarSize = this._energy / 240;
+  }
+
+  set IsSpecial(value: boolean) {
+    this._isSpecial = value;
+    if (this._isSpecial) {
+      SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT008);
+      //_isUsedSpecial = true;
+      //addChild(new MovieClipWrapper(new UsingSPAsset(),true,true));
+      //dander = 0;
+    }
   }
 
   get Direction(): number {
@@ -272,8 +286,8 @@ class Player extends PhysicalObj {
     this.emit(PlayerEventsEnum.ATTACKING_CHANGED);
   }
 
-  get IsAttacking() : boolean{
-    return this._isAttacking
+  get IsAttacking(): boolean {
+    return this._isAttacking;
   }
 
   ComputeFallNextXY(dt: number): Point {
@@ -310,6 +324,10 @@ class Player extends PhysicalObj {
     if (list.length > 0) {
       this.CollideObject(list);
     }
+  }
+
+  get BodyPos(): Point {
+    return this._body.position;
   }
 
   get Force(): number {

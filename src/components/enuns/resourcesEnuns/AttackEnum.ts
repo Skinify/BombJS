@@ -1,9 +1,10 @@
 enum AttackEnum {
   BALL = "BALL",
   BOOM_SPRITESHEET = "BOOM_SPRITESHEET",
-  SPECIAL = "SPECIAL",
+  SPECIAL = "BALL_SPECIAL",
   BORDER = "BORDER",
-  SHAPE= "SHAPE"
+  SHAPE = "SHAPE",
+  PLANE_SPRITESHEET = "PLANE_SPRITESHEET",
 }
 
 export default AttackEnum;

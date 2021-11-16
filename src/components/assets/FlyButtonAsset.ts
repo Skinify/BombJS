@@ -5,11 +5,14 @@ import AssetsManager from "../managers/AssetsManager";
 import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
 import HudEnums from "../enuns/resourcesEnuns/HudEnum";
+import Player from "../physics/Player";
 
 class FlyButtonAsset extends AnimatedSprite implements IAsset {
   private _flyButtonSheet = {};
-  constructor() {
+  private _player : Player;
+  constructor(player: Player) {
     super([Texture.EMPTY]);
+    this._player = player;
     this._flyButtonSheet = {};
     AssetsManager.Instance.LoadAssets([
       {
@@ -66,7 +69,10 @@ class FlyButtonAsset extends AnimatedSprite implements IAsset {
     );
     this.on(
       "pointerdown",
-      () => (super.textures = this._flyButtonSheet["PRESSED"])
+      () => {
+        super.textures = this._flyButtonSheet["PRESSED"]
+        this._player.IsFly = true;
+      }
     );
     this.on(
       "pointerup",

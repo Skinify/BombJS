@@ -1,4 +1,7 @@
 import { Point } from "@pixi/math";
+import BallN from "../assets/BallN";
+import BallSPAsset from "../assets/BallSPAsset";
+import TSBallAsset from "../assets/TSBallAsset";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
 import SoundManager from "../managers/SoundManager";
@@ -39,31 +42,34 @@ class ShootAction extends BaseAction {
 
   Execute(): void {
     let v;
- 
+
     var bomb: SimpleBomb | null = null;
     this._count++;
     if (this._count > 60) {
       v = this.Polar(this._force, (this._angle / 180) * Math.PI);
       bomb = null;
       if (this._isSpecial) {
-        //bomb = new SimpleBomb(this._player, new BallSPAsset());
-        
+        bomb = new SimpleBomb(
+          this._player,
+          SoundEffectEnum.SOUND_EFFECT095,
+          new BallN()
+        );
         SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT075);
-        bomb = new SimpleBomb(this._player);
-        bomb.BombSound = "095";
       } else if (this._isFly) {
-        //bomb = new SimpleBomb(this._player, new TSBallAsset());
-        bomb = new SimpleBomb(this._player);
+        bomb = new SimpleBomb(
+          this._player,
+          SoundEffectEnum.SOUND_EFFECT096,
+          new TSBallAsset()
+        );
         SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT023);
-        //SoundManager.instance.play("023");
-        bomb.BombSound = "096";
         bomb.IsFly = true;
       } else {
-        //bomb = new SimpleBomb(this._player, new BallN());
-        bomb = new SimpleBomb(this._player);
+        bomb = new SimpleBomb(
+          this._player,
+          SoundEffectEnum.SOUND_EFFECT095,
+          new BallSPAsset()
+        );
         SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT033);
-        //SoundManager.instance.play("033");
-        bomb.BombSound = "095";
       }
       bomb.SetSpeedXY(v);
       bomb.Pos = this._pos;

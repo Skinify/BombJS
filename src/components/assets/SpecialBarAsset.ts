@@ -11,13 +11,16 @@ import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
 import HitAreaShapes from "hitarea-shapes";
 import * as PIXI from "pixi.js";
+import Player from "../physics/Player";
 
 class SpecialBarAsset extends Sprite implements IAsset {
   private _lightFilter;
   private _darkFilter;
+  private _player: Player;
 
-  constructor() {
+  constructor(player: Player) {
     super(Texture.EMPTY);
+    this._player = player;
     AssetsManager.Instance.LoadAssets([
       {
         key: HudEnums.RIGHT_BAR,
@@ -169,6 +172,7 @@ class SpecialBarAsset extends Sprite implements IAsset {
     special.loop = true;
     special.on("click", () => {
       special.visible = false;
+      this._player.IsSpecial = true;
     });
     special.play();
 

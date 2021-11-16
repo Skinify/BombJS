@@ -1,11 +1,11 @@
-import { BaseTexture, Sprite } from "pixi.js";
+import { BaseTexture, Rectangle, Sprite } from "pixi.js";
 import { Dict } from "@pixi/utils";
 import { AnimatedSprite, LoaderResource, Texture } from "pixi.js";
 import IAsset from "./interface/IAsset";
 import AssetsManager from "../managers/AssetsManager";
 import AttackEnum from "../enuns/resourcesEnuns/AttackEnum";
 
-class BallSPAsset extends AnimatedSprite implements IAsset {
+class BallN extends AnimatedSprite implements IAsset {
   private _ball: Sprite;
   private _shape: Sprite;
   private _border: Sprite;
@@ -14,8 +14,8 @@ class BallSPAsset extends AnimatedSprite implements IAsset {
     this._ball = new Sprite(Texture.EMPTY);
     this._shape = new Sprite(Texture.EMPTY);
     this._border = new Sprite(Texture.EMPTY);
-    let ballAsset = AssetsManager.Instance.GetPreloaded(AttackEnum.BALL);
-    this.textures = [new Texture(BaseTexture.from(ballAsset.data))];
+    let res = AssetsManager.Instance.GetPreloaded(AttackEnum.SPECIAL);
+    this.textures = [new Texture(BaseTexture.from(res.data))];
     this.onComplete = () => (this.visible = false);
     this.pivot.set(this.width / 2, this.height / 2);
   }
@@ -29,4 +29,4 @@ class BallSPAsset extends AnimatedSprite implements IAsset {
   }
 }
 
-export default BallSPAsset;
+export default BallN;

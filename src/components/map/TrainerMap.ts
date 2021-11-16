@@ -88,7 +88,6 @@ class TrainerMap extends Sprite {
   }
 
   AddPhysical(phy: PhysicalObj): void {
-    console.log("Adding")
     this.addChild(phy);
     phy.Map = this;
     this._objects.push(phy);
