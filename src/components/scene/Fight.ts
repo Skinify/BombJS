@@ -24,10 +24,11 @@ class Fight extends BaseScene {
 
   constructor() {
     super();
+    this.sortableChildren = true;
     this._map = new TrainerMap();
+    this._flag = new FlagAsset();
     this._player = new Player();
     this._hud = new HudView(this._player);
-    this._flag = new FlagAsset();
 
     AssetsManager.Instance.LoadAssets([
       {
