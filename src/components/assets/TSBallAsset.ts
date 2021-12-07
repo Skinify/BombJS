@@ -9,6 +9,7 @@ class TSBallAsset extends AnimatedSprite implements IAsset {
   private _ball: Sprite;
   private _shape: Sprite;
   private _border: Sprite;
+  private _blast: AnimatedSprite;
   constructor() {
     super([Texture.EMPTY]);
     this._ball = new Sprite(Texture.EMPTY);
@@ -30,6 +31,13 @@ class TSBallAsset extends AnimatedSprite implements IAsset {
 
     this.onComplete = () => (this.visible = false);
     this.pivot.set(this.width / 2, this.height / 2);
+
+    this._blast = new AnimatedSprite([Texture.EMPTY]);
+    this._blast.loop = false;
+  }
+
+  get Blast(): AnimatedSprite {
+    return this._blast;
   }
 
   OnLoad(args: LoaderResource | Dict<LoaderResource>): void {

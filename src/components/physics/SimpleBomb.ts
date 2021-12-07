@@ -21,28 +21,7 @@ class SimpleBomb extends PhysicalObj {
     this.addChild(this._ball);
     this._isFly = false;
     this._bombSound = bombSound;
-
-    this._blastMC = new AnimatedSprite([Texture.EMPTY]);
-    this._blastMC.loop = false;
-
-    let ssheet = AssetsManager.Instance.GetPreloaded(
-      AttackEnum.BOOM_SPRITESHEET
-    );
-    if (ssheet.texture) {
-      let t = ssheet.texture.baseTexture;
-      let h = 240;
-      let w = 320;
-
-      let c = 0;
-      let spriteObj: Array<Texture> = [];
-      while (true) {
-        spriteObj.push(new Texture(t, new Rectangle(c * w, 0, w, h)));
-        c++;
-        if (c === 16) break;
-      }
-
-      this._blastMC.textures = spriteObj;
-    }
+    this._blastMC = this._ball.Blast;
   }
 
   get Player(): Player {

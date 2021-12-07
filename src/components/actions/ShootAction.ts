@@ -1,5 +1,5 @@
 import { Point } from "@pixi/math";
-import BallN from "../assets/BallN";
+import BallNAsset from "../assets/BallNAsset";
 import BallSPAsset from "../assets/BallSPAsset";
 import TSBallAsset from "../assets/TSBallAsset";
 import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
@@ -52,7 +52,7 @@ class ShootAction extends BaseAction {
         bomb = new SimpleBomb(
           this._player,
           SoundEffectEnum.SOUND_EFFECT095,
-          new BallN()
+          new BallNAsset()
         );
         SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT075);
       } else if (this._isFly) {

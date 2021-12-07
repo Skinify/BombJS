@@ -13,6 +13,7 @@ import ShootAction from "../actions/ShootAction";
 import SoundManager from "../managers/SoundManager";
 import SoundEffectEnum from "../enuns/resourcesEnuns/SoundEffectEnum";
 import FlyPropEffect from "../propEffects/FlyPropEffect";
+import SuperPropEffect from "../propEffects/SuperPropEffect";
 
 class Player extends PhysicalObj {
   protected _player: Sprite;
@@ -118,14 +119,28 @@ class Player extends PhysicalObj {
     this._force = 0;
     this.Energy = 240;
     if (this.IsLiving) {
-      this._dander = 200;
+      this.Dander = 200;
     } else {
-      this._dander = 0;
+      this.Dander = 0;
     }
     this._isSpecial = false;
     this.IsAttacking = true;
     this._isFly = false;
     this.emit(PlayerEventsEnum.BEGIN_NEW_TURN);
+  }
+
+  set Dander(value: number) {
+    if (this._dander === value) return;
+    this._dander = value;
+    this.emit(PlayerEventsEnum.DANDER_CHANGED);
+  }
+
+  get Danger(): number {
+    return this._dander;
+  }
+
+  get IsFly(): boolean {
+    return this._isFly;
   }
 
   set IsFly(value: boolean) {
@@ -204,9 +219,9 @@ class Player extends PhysicalObj {
     this._isSpecial = value;
     if (this._isSpecial) {
       SoundManager.Instance.Play(SoundEffectEnum.SOUND_EFFECT008);
-      //_isUsedSpecial = true;
-      //addChild(new MovieClipWrapper(new UsingSPAsset(),true,true));
-      //dander = 0;
+      this._isUsedSpecial = true;
+      this.addChild(new SuperPropEffect(this));
+      this.Dander = 0;
     }
   }
 
@@ -371,6 +386,10 @@ class Player extends PhysicalObj {
 
   static get MAX_ANGLE(): number {
     return 65;
+  }
+
+  static get MAX_DANGER(): number {
+    return 200;
   }
 
   AddEventListener(event: any, listener: any): void {

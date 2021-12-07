@@ -6,10 +6,11 @@ import IAsset from "./interface/IAsset";
 import paths from "../../config/paths.json";
 import HudEnums from "../enuns/resourcesEnuns/HudEnum";
 import Player from "../physics/Player";
+import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 
 class FlyButtonAsset extends AnimatedSprite implements IAsset {
   private _flyButtonSheet = {};
-  private _player : Player;
+  private _player: Player;
   constructor(player: Player) {
     super([Texture.EMPTY]);
     this._player = player;
@@ -59,25 +60,28 @@ class FlyButtonAsset extends AnimatedSprite implements IAsset {
     this.interactive = true;
     this.animationSpeed = 0.6;
     this.loop = true;
-    this.on(
-      "pointerover",
-      () => (super.textures = this._flyButtonSheet["HOVER"])
-    );
-    this.on(
-      "pointerout",
-      () => (super.textures = this._flyButtonSheet["NORMAL"])
-    );
-    this.on(
-      "pointerdown",
-      () => {
-        super.textures = this._flyButtonSheet["PRESSED"]
+    this.on("pointerover", () => {
+      if (this._player.IsFly) super.textures = this._flyButtonSheet["DISABLED"];
+      else super.textures = this._flyButtonSheet["HOVER"];
+    });
+    this.on("pointerout", () => {
+      if (this._player.IsFly) super.textures = this._flyButtonSheet["DISABLED"];
+      else super.textures = this._flyButtonSheet["NORMAL"];
+    });
+    this.on("pointerdown", () => {
+      if (this._player.IsFly) super.textures = this._flyButtonSheet["DISABLED"];
+      else {
+        super.textures = this._flyButtonSheet["PRESSED"];
         this._player.IsFly = true;
       }
-    );
-    this.on(
-      "pointerup",
-      () => (super.textures = this._flyButtonSheet["NORMAL"])
-    );
+    });
+    this.on("pointerup", () => {
+      if (this._player.IsFly) super.textures = this._flyButtonSheet["DISABLED"];
+      else super.textures = this._flyButtonSheet["NORMAL"];
+    });
+    this._player.on(PlayerEventsEnum.BEGIN_NEW_TURN, () => {
+      super.textures = this._flyButtonSheet["NORMAL"];
+    });
     this.play();
   }
   OnLoadError(args: any): void {

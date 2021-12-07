@@ -1,6 +1,7 @@
 import {
   AnimatedSprite,
   BaseTexture,
+  Graphics,
   Rectangle,
   Sprite,
   Texture,
@@ -12,15 +13,22 @@ import paths from "../../config/paths.json";
 import HitAreaShapes from "hitarea-shapes";
 import * as PIXI from "pixi.js";
 import Player from "../physics/Player";
+import PlayerEventsEnum from "../enuns/gameEnuns/PlayerEventsEnum";
 
 class SpecialBarAsset extends Sprite implements IAsset {
   private _lightFilter;
   private _darkFilter;
   private _player: Player;
+  private _specialMeterMask: Graphics;
+  private _special: AnimatedSprite;
+  private _specialMeter: Sprite;
 
   constructor(player: Player) {
     super(Texture.EMPTY);
     this._player = player;
+    this._specialMeterMask = new Graphics();
+    this._specialMeter = new Sprite();
+    this._special = new AnimatedSprite([Texture.EMPTY]);
     AssetsManager.Instance.LoadAssets([
       {
         key: HudEnums.RIGHT_BAR,
@@ -83,15 +91,38 @@ class SpecialBarAsset extends Sprite implements IAsset {
 
     this._darkFilter = new PIXI.filters.ColorMatrixFilter();
     this._darkFilter.brightness(0.8, false);
+
+    this._player.on(
+      PlayerEventsEnum.DANDER_CHANGED,
+      this._UpdateDanger.bind(this)
+    );
+  }
+
+  private _UpdateDanger() {
+    this._specialMeterMask.clear();
+    let dander = this._player.Danger;
+    if (dander >= Player.MAX_DANGER) {
+      this._special.visible = true;
+    } else {
+      this._special.visible = false;
+    }
+    this._specialMeterMask.beginFill(0xde3249);
+    this._specialMeterMask.drawRect(
+      this._specialMeter.x,
+      this._specialMeter.y,
+      this._specialMeter.width * (dander / Player.MAX_DANGER),
+      this._specialMeter.height
+    );
+    this._specialMeterMask.endFill();
   }
 
   OnLoad(args): void {
     this.texture = new Texture(BaseTexture.from(args[HudEnums.RIGHT_BAR].data));
 
-    let specialMeter = new Sprite(
+    this._specialMeter = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.SPECIAL_METER].data))
     );
-    specialMeter.position.set(26, 56);
+    this._specialMeter.position.set(26, 56);
 
     let lifeBar = new Sprite(
       new Texture(BaseTexture.from(args[HudEnums.LIFE_BAR].data))
@@ -160,25 +191,34 @@ class SpecialBarAsset extends Sprite implements IAsset {
       new Texture(ssheet, new Rectangle(7 * w, 0, w, h)),
       new Texture(ssheet, new Rectangle(8 * w, 0, w, h)),
     ];
-    let special = new AnimatedSprite(specialSheet["NORMAL"]);
+    this._special = new AnimatedSprite(specialSheet["NORMAL"]);
 
     const hitArea = new HitAreaShapes(args[HudEnums.SPECIAL_HITAREA].data);
-    special.hitArea = hitArea;
+    this._special.hitArea = hitArea;
 
-    special.position.set(-16, -48);
-    special.buttonMode = true;
-    special.interactive = true;
-    special.animationSpeed = 0.4;
-    special.loop = true;
-    special.on("click", () => {
-      special.visible = false;
+    this._special.position.set(-16, -48);
+    this._special.buttonMode = true;
+    this._special.interactive = true;
+    this._special.animationSpeed = 0.4;
+    this._special.loop = true;
+    this._special.on("click", () => {
+      this._special.visible = false;
       this._player.IsSpecial = true;
     });
-    special.play();
-
-    this.addChild(specialMeter);
+    this._special.play();
+    this._specialMeterMask = new Graphics();
+    this._specialMeterMask.beginFill(0xde3249);
+    this._specialMeterMask.drawRect(
+      this._specialMeter.x,
+      this._specialMeter.y,
+      this._specialMeter.width,
+      this._specialMeter.height
+    );
+    this._specialMeterMask.endFill();
+    this._specialMeter.mask = this._specialMeterMask;
+    this.addChild(this._specialMeter);
     this.addChild(specialDisabled);
-    this.addChild(special);
+    this.addChild(this._special);
     this.addChild(lifeBar);
     this.addChild(chatButton);
     this.addChild(emoticonButton);
@@ -186,6 +226,8 @@ class SpecialBarAsset extends Sprite implements IAsset {
     this.addChild(configButton);
     this.addChild(quitButton);
     this.addChild(suicideButton);
+    this.addChild(this._specialMeterMask);
+    window.temp = this._specialMeterMask;
   }
 
   OnLoadError(args: any): void {
